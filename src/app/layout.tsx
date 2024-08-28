@@ -1,8 +1,7 @@
+import { BaseStyles, ThemeProvider } from '@primer/react';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import './globals.css';
-
-const inter = Inter({ subsets: ['latin'] });
+import StyledComponentsRegistry from './StyledComponentsRegistry';
 
 export const metadata: Metadata = {
   title: 'Site Institucional',
@@ -15,8 +14,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="pt-BR" suppressHydrationWarning>
+      <body>
+        <StyledComponentsRegistry>
+          <ThemeProvider>
+            <BaseStyles>
+              {children}
+            </BaseStyles>
+          </ThemeProvider>
+        </StyledComponentsRegistry>
+      </body>
     </html>
   );
 }

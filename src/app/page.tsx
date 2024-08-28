@@ -1,3 +1,4 @@
+import { Button } from '@primer/react';
 import { cryptography } from './models/cryptography';
 
 export default function Home() {
@@ -25,6 +26,7 @@ export default function Home() {
   return (
     <main>
       <h1>Identificação Estudantil</h1>
+      <Button variant='primary'>Teste Primer</Button>
     </main>
   );
 }
