@@ -1,6 +1,6 @@
-import { BaseStyles, ThemeProvider } from '@primer/react';
+import { BaseStyles, theme, ThemeProvider } from '@primer/react';
 import type { Metadata } from 'next';
-import './globals.css';
+import { PageLayout } from './page-layout';
 import StyledComponentsRegistry from './StyledComponentsRegistry';
 
 export const metadata: Metadata = {
@@ -17,9 +17,14 @@ export default function RootLayout({
     <html lang="pt-BR" suppressHydrationWarning>
       <body>
         <StyledComponentsRegistry>
-          <ThemeProvider>
+          <ThemeProvider
+            theme={theme}
+            colorMode="dark"
+            preventSSRMismatch
+            nightScheme="dark_dimmed"
+          >
             <BaseStyles>
-              {children}
+              <PageLayout>{children}</PageLayout>
             </BaseStyles>
           </ThemeProvider>
         </StyledComponentsRegistry>
