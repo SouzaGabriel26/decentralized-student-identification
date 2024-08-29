@@ -4,7 +4,10 @@ const nextConfig = {
     styledComponents: {
       ssr: true,
     },
-  }
+  },
+  experimental: {
+    typedRoutes: true,
+  },
 };
 
 export default nextConfig;

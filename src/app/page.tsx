@@ -1,32 +1,20 @@
-import { Button } from '@primer/react';
-import { cryptography } from './models/cryptography';
+import { Box, Text } from '@primer/react';
+import Link from 'next/link';
 
 export default function Home() {
-  const { publicKey, privateKey } = cryptography.generateKeyPairs({
-    passphrase: '1234',
-  });
-
-  const encryptedData = cryptography.encryptData({
-    data: {
-      name: 'Gabriel',
-    },
-    publicKey,
-  });
-
-  console.log({ encryptedData });
-
-  const decryptedData = cryptography.decryptData({
-    encryptedData,
-    privateKey,
-    passphrase: '1234',
-  });
-
-  console.log({ decryptedData });
-
   return (
-    <main>
-      <h1>Identificação Estudantil</h1>
-      <Button variant='primary'>Teste Primer</Button>
-    </main>
+    <Box>
+      <Text
+        sx={{
+          display: 'block',
+        }}
+      >
+        Seja bem vindo ao site da Instituição X
+      </Text>
+
+      <Link style={{ color: '#539bf5' }} href="/register">
+        Preencher matrícula
+      </Link>
+    </Box>
   );
 }
