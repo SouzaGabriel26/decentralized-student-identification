@@ -36,6 +36,8 @@ export function Sidebar() {
         pt: 3,
         maxWidth: 'fit-content',
         borderRight: '1px solid',
+        borderColor: 'border.default',
+        bg: 'canvas.subtle',
       }}
     >
       <NavList
