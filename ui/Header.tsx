@@ -1,4 +1,4 @@
-import { ThemeSwitcher } from '@/src/app/components/ThemeSwitcher';
+import { ThemeSwitcher } from '@/app/components/ThemeSwitcher';
 import { Box, BoxProps, Text } from '@primer/react';
 
 export function Header({ ...props }: BoxProps) {
@@ -11,6 +11,7 @@ export function Header({ ...props }: BoxProps) {
         width: '100%',
         height: 'fit-content',
         borderBottom: '1px solid',
+        borderColor: 'border.default',
         justifyContent: 'space-between',
         alignItems: 'center',
       }}
