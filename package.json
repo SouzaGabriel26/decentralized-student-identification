@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "pnpm services:up && pnpm services:wait && next dev",
+    "project:setup": "pnpm i && pnpm services:up && pnpm services:wait && pnpm migrate",
     "build": "next build",
     "start": "next start",
     "lint": "pnpm lint:next && pnpm lint:prettier",
