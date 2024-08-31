@@ -50,11 +50,17 @@ function decryptData({
   privateKey,
   passphrase,
 }: DecryptDataProps) {
-  const bufferData = Buffer.from(encryptedData, 'base64');
-  const decryptedData = crypto.privateDecrypt(
-    { key: privateKey, passphrase },
-    bufferData,
-  );
+  try {
+    const bufferData = Buffer.from(encryptedData, 'base64');
+    const decryptedData = crypto.privateDecrypt(
+      { key: privateKey, passphrase },
+      bufferData,
+    );
 
-  return { decryptedData: JSON.parse(decryptedData.toString('utf8')) };
+    return { decryptedData: JSON.parse(decryptedData.toString('utf8')) };
+  } catch {
+    return {
+      error: 'Senha inválida para chave privada.',
+    };
+  }
 }
