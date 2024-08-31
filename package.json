@@ -6,12 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "pnpm lint:next & pnpm lint:prettier",
+    "lint": "pnpm lint:next && pnpm lint:prettier",
     "lint:next": "next lint --max-warnings=0 --dir .",
     "lint:prettier": "prettier --check .",
     "services:up": "pnpm docker:compose up -d",
     "services:down": "pnpm docker:compose down",
     "docker:compose": "docker compose --file ./infra/compose.yaml --env-file .env",
+    "migrate": "prisma migrate dev",
     "prepare": "husky",
     "test": "vitest run",
     "test:watch": "vitest"
@@ -19,10 +20,13 @@
   "dependencies": {
     "@primer/octicons-react": "^19.11.0",
     "@primer/react": "^36.27.0",
+    "@prisma/client": "5.19.0",
     "next": "14.2.3",
+    "prisma": "^5.19.0",
     "react": "^18",
     "react-dom": "^18.3.1",
-    "styled-components": "5.3.11"
+    "styled-components": "5.3.11",
+    "tsx": "^4.19.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",
