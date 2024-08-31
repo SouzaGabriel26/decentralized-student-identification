@@ -9,6 +9,9 @@
     "lint": "pnpm lint:next & pnpm lint:prettier",
     "lint:next": "next lint --max-warnings=0 --dir .",
     "lint:prettier": "prettier --check .",
+    "services:up": "pnpm docker:compose up -d",
+    "services:down": "pnpm docker:compose down",
+    "docker:compose": "docker compose --file ./infra/compose.yaml --env-file .env",
     "prepare": "husky",
     "test": "vitest run",
     "test:watch": "vitest"
@@ -28,6 +31,8 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/styled-components": "^5.1.34",
+    "dotenv": "^16.4.5",
+    "dotenv-expand": "^11.0.6",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
     "eslint-plugin-prettier": "^5.1.3",
