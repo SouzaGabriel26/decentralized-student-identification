@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "pnpm lint:next & pnpm lint:prettier",
+    "lint:next": "next lint --max-warnings=0 --dir .",
+    "lint:prettier": "prettier --check .",
     "prepare": "husky",
     "test": "vitest run",
     "test:watch": "vitest"
