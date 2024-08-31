@@ -36,7 +36,7 @@ type EncryptDataProps<T> = {
 function encryptData<Data>({ data, publicKey }: EncryptDataProps<Data>) {
   const bufferData = Buffer.from(JSON.stringify(data), 'utf8');
   const encryptedData = crypto.publicEncrypt(publicKey, bufferData);
-  return encryptedData.toString('base64');
+  return { encryptedData: encryptedData.toString('base64') };
 }
 
 type DecryptDataProps = {
@@ -56,5 +56,5 @@ function decryptData({
     bufferData,
   );
 
-  return JSON.parse(decryptedData.toString('utf8'));
+  return { decryptedData: JSON.parse(decryptedData.toString('utf8')) };
 }
