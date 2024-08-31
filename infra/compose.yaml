@@ -1,0 +1,12 @@
+services:
+  db:
+    image: 'postgres'
+    container_name: 'student-identification-db'
+    ports:
+      - '${DEFAULT_POSTGRES_PORT}:5432'
+    environment:
+      - POSTGRES_USER=${DEFAULT_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${DEFAULT_POSTGRES_PASSWORD}
+      - POSTGRES_HOST=${DEFAULT_POSTGRES_HOST}
+      - POSTGRES_PORT=${DEFAULT_POSTGRES_PORT}
+      - POSTGRES_DB=${DEFAULT_POSTGRES_DB}
