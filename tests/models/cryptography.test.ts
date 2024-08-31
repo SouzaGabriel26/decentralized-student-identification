@@ -51,4 +51,28 @@ describe('> models/cryptography', () => {
       decryptedData: data,
     });
   });
+
+  test('Invoking "decryptData" with wrong passphrase', () => {
+    const data = { name: 'Jane Doe', age: 25 };
+    const passphrase = 'password';
+
+    const { privateKey, publicKey } = cryptography.generateKeyPairs({
+      passphrase,
+    });
+
+    const { encryptedData } = cryptography.encryptData({
+      data,
+      publicKey,
+    });
+
+    const result = cryptography.decryptData({
+      encryptedData,
+      privateKey,
+      passphrase: 'wrong-password',
+    });
+
+    expect(result).toStrictEqual({
+      error: 'Senha inválida para chave privada.',
+    });
+  });
 });
