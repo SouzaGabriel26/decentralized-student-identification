@@ -1,30 +1,30 @@
-## Sobre
+## About
 
-Em breve...
+Coming soon...
 
-## Como rodar o projeto
+## How to run
 
-> OBS: Para esse projeto localmente, você precisa ter o docker instalado na sua máquina.
+> ATTENTION: To run this project locally, you must have docker installed on your machine.
 
-#### Se você está rodando o projeto pela primeira vez, cole esse comando no terminal:
+### If you are running the project for the first time, paste this command into your terminal:
 
 ```bash
 pnpm project:setup
 ```
 
-- Esse comando irá:
-  1. instalar as dependencias do projeto;
-  2. subir o conteiner docker;
-  3. esperar pelo conteiner;
-  4. aplicar as migrations.
+- This command will:
+  1. install project dependencies;
+  2. compose up docker conteiner;
+  3. wait for the conteiner up;
+  4. run migrations.
 
-#### Para rodar o projeto, cole esse comando no terminal:
+#### To run the project, paste this command into your terminal:
 
 ```bash
 pnpm dev
 ```
 
-- Esse comando irá:
-  1. subir o conteiner docker;
-  2. esperar pelo conteiner;
-  3. rodar a aplicação
+- This command will:
+  1. compose up docker conteiner;
+  2. wait for conteiner;
+  3. run the development server.
