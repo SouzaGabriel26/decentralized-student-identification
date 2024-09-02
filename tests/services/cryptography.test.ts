@@ -1,4 +1,4 @@
-import { cryptography } from '@/app/models/cryptography';
+import { cryptography } from '@/app/services/cryptography';
 
 describe('> models/cryptography', () => {
   test('Invoking "generateKeyPairs"', () => {
