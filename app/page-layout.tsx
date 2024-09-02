@@ -1,5 +1,5 @@
-import { Header } from '@/ui/Header';
-import { Sidebar } from '@/ui/Sidebar';
+import { Header } from '@/app/ui/Header';
+import { Sidebar } from '@/app/ui/Sidebar';
 import { Box } from '@primer/react';
 import { ReactNode } from 'react';
 
