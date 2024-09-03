@@ -50,5 +50,20 @@ jobs:
       - name: Install dependencies
         run: pnpm i
 
+      - name: Create .env file
+        run: cp .env.example .env
+
+      - name: Start containers
+        run: pnpm services:up
+
+      - name: Run prisma migrations
+        run: pnpm migrate
+
       - name: Run web server & Run test script
         run: pnpm next & pnpm test
+
+      - name: Stop container
+        run: pnpm services:down
+
+      - name: Remove temp .env file
+        run: rm .env
