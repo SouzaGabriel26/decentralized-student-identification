@@ -50,7 +50,7 @@ jobs:
       - name: Install dependencies
         run: pnpm i
 
-      - name: Create .env file
+      - name: Create .env file from .env.example
         run: cp .env.example .env
 
       - name: Start containers
@@ -65,5 +65,5 @@ jobs:
       - name: Stop container
         run: pnpm services:down
 
-      - name: Remove temp .env file
+      - name: Remove .env created from .env.example
         run: rm .env
