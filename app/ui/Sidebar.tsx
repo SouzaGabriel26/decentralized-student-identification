@@ -7,7 +7,7 @@ import {
   ListUnorderedIcon,
   PersonIcon,
 } from '@primer/octicons-react';
-import { Box, NavList } from '@primer/react';
+import { Box, NavList, Text } from '@primer/react';
 import { Route } from 'next';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -25,8 +25,8 @@ type NavItemProps = {
 
 export function Sidebar() {
   const pathname = usePathname();
-  const isUserLoggedIn = true;
-  const isUserAdmin = true;
+  const isUserLoggedIn = false;
+  const isUserAdmin = false;
 
   return (
     <Box
@@ -71,14 +71,38 @@ function NavListItem({ item, pathname }: NavListItemProps) {
   return (
     <NavList.Item
       sx={{
-        width: 224,
+        '@media (min-width: 1920px)': {
+          width: 224,
+        },
+        '@media (min-width: 480px) and (max-width: 1919px)': {
+          width: 170,
+        },
       }}
       as={Link}
       href={item.href}
       aria-current={item.href === pathname}
     >
-      <NavList.LeadingVisual>{item.icon}</NavList.LeadingVisual>
-      {item.title}
+      <NavList.LeadingVisual
+        sx={{
+          '@media (max-width: 480px)': {
+            marginX: 'auto',
+          },
+        }}
+      >
+        {item.icon}
+      </NavList.LeadingVisual>
+      <Text
+        sx={{
+          '@media (max-width: 1919px)': {
+            fontSize: '12px',
+          },
+          '@media (max-width: 480px)': {
+            display: 'none',
+          },
+        }}
+      >
+        {item.title}
+      </Text>
     </NavList.Item>
   );
 }
