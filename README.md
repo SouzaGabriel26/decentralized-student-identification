@@ -6,6 +6,12 @@ Coming soon...
 
 > ATTENTION: To run this project locally, you must have docker installed on your machine.
 
+### First, create a .env file based on .env.example
+
+```bash
+cp .env.example .env
+```
+
 ### If you are running the project for the first time, paste this command into your terminal:
 
 ```bash
