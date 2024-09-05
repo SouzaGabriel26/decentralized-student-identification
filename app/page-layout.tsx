@@ -31,6 +31,7 @@ export function PageLayout({ children }: Props) {
           sx={{
             px: 4,
             py: 2,
+            width: '100%',
           }}
         >
           {children}
