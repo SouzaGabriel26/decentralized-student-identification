@@ -24,7 +24,7 @@ export function CustomInput({
       sx={{
         width: '100%',
       }}
-      required
+      required={required}
     >
       <FormControl.Label>{label}</FormControl.Label>
       <TextInput name={name} block {...props} />

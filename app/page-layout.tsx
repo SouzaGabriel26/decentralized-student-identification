@@ -12,7 +12,7 @@ export function PageLayout({ children }: Props) {
     <Box
       sx={{
         bg: 'canvas.default',
-        height: '100vh',
+        minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
       }}
@@ -32,6 +32,7 @@ export function PageLayout({ children }: Props) {
             px: 4,
             py: 2,
             width: '100%',
+            height: '100%',
           }}
         >
           {children}
