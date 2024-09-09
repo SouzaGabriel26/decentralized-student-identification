@@ -14,8 +14,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
-      <body>
+    <html
+      lang="pt-BR"
+      suppressHydrationWarning
+      style={{
+        height: '100%',
+        width: '100%',
+      }}
+    >
+      <body
+        style={{
+          height: '100%',
+          width: '100%',
+        }}
+      >
         <StyledComponentsRegistry>
           <ThemeProvider
             theme={theme}
