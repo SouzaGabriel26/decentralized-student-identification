@@ -1,6 +1,6 @@
 import { CustomInput } from '@/app/components/CustomInput';
 import { CustomSelect } from '@/app/components/CustomSelect';
-import { lambda } from '@/app/services/lambda';
+import { lambda } from '@/services/lambda';
 import { Box, Button, Text } from '@primer/react';
 
 export default function Page() {

@@ -1,5 +1,5 @@
-import { userRepository } from '@/app/repositories/userRepository';
 import prismaClient from '@/lib/prismaClient';
+import { userRepository } from '@/repositories/userRepository';
 
 import { randomBytes, randomUUID } from 'node:crypto';
 
