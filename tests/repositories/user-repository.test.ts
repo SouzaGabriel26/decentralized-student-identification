@@ -18,7 +18,6 @@ describe('> User Repository', () => {
         email,
         password: '123456',
         publicKey: randomUUID(),
-        cryptedPrivateKey: randomUUID(),
       },
       select: {
         id: true,
@@ -40,7 +39,6 @@ describe('> User Repository', () => {
         email,
         password: '123456asdadasda',
         publicKey: randomUUID(),
-        cryptedPrivateKey: randomUUID(),
       },
     });
 
@@ -55,13 +53,49 @@ describe('> User Repository', () => {
       email: 'gabriel@mail.com',
       passwordHash: '123456asdsadsadas',
       publicKey: randomUUID(),
-      cryptedPrivateKey: randomUUID(),
     };
 
     const createdUser = await userRepository.create(input);
 
     expect(createdUser).toStrictEqual({
       id: expect.any(String),
+      name: input.name,
+      email: input.email,
+    });
+  });
+
+  it('should create pending user data and return id, userId, name and email', async () => {
+    const createdUser = await prismaClient.user.create({
+      data: {
+        name: 'Gabriel',
+        email: 'test@mail.com',
+        password: randomUUID(),
+        publicKey: randomUUID(),
+      },
+    });
+
+    const userId = createdUser.id;
+
+    const input = {
+      name: createdUser.name,
+      email: createdUser.email,
+      cpf: '12345678901',
+      cep: '12345678',
+      address: 'Rua Teste',
+      number: '123',
+      complement: 'Casa',
+      course: 'Ciência da Computação',
+      photoUrl: 'http://test.com/photo.jpg',
+    };
+
+    const createdPendingData = await userRepository.createPendingData(
+      userId,
+      input,
+    );
+
+    expect(createdPendingData).toStrictEqual({
+      id: expect.any(String),
+      userId,
       name: input.name,
       email: input.email,
     });
