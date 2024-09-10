@@ -1,5 +1,6 @@
 import { CustomInput } from '@/app/components/CustomInput';
 import { CustomSelect } from '@/app/components/CustomSelect';
+import { lambda } from '@/app/services/lambda';
 import { Box, Button, Text } from '@primer/react';
 
 export default function Page() {
@@ -14,6 +15,20 @@ export default function Page() {
       }}
     >
       <form
+        action={async (formData: FormData) => {
+          'use server';
+
+          const file = formData.get('photo') as File;
+
+          const { presigned_url } = await lambda.getPresignedUrl(file);
+
+          const result = await lambda.uploadFileTOS3(file, presigned_url);
+
+          if (result.ok) {
+            // TODO: generate cryptography keyPair
+            // TODO: create user and create user pending data
+          }
+        }}
         style={{
           display: 'flex',
           flexDirection: 'column',

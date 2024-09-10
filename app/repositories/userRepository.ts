@@ -6,13 +6,24 @@ type CreateUserInput = {
   email: string;
   passwordHash: string;
   publicKey: string;
-  cryptedPrivateKey: string;
 };
 
 type CreateUserOutput = {
   id: string;
   name: string;
   email: string;
+};
+
+type CreatePendingDataInput = {
+  name: string;
+  email: string;
+  cpf: string;
+  cep: string;
+  address: string;
+  number: string;
+  complement?: string;
+  course: string;
+  photoUrl: string;
 };
 
 class UserRepository {
@@ -26,7 +37,8 @@ class UserRepository {
         name: true,
         email: true,
         publicKey: true,
-        cryptedPrivateKey: true,
+        status: true,
+        createdAt: true,
       },
     });
   }
@@ -41,7 +53,8 @@ class UserRepository {
         name: true,
         email: true,
         publicKey: true,
-        cryptedPrivateKey: true,
+        status: true,
+        createdAt: true,
       },
     });
   }
@@ -53,12 +66,34 @@ class UserRepository {
         email: input.email,
         password: input.passwordHash,
         publicKey: input.publicKey,
-        cryptedPrivateKey: input.cryptedPrivateKey,
       },
       select: {
         id: true,
         name: true,
         email: true,
+      },
+    });
+  }
+
+  async createPendingData(userId: string, input: CreatePendingDataInput) {
+    return await prismaClient.userPendingData.create({
+      data: {
+        userId,
+        name: input.name,
+        email: input.email,
+        cpf: input.cpf,
+        cep: input.cep,
+        address: input.address,
+        number: input.number,
+        complement: input.complement,
+        course: input.course,
+        photoUrl: input.photoUrl,
+      },
+      select: {
+        name: true,
+        email: true,
+        userId: true,
+        id: true,
       },
     });
   }
