@@ -43,7 +43,7 @@ model UserPendingData {
   photoUrl   String   @map("photo_url")
   createdAt  DateTime @default(now()) @map("created_at")
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("(user_pending_data)")
 }
