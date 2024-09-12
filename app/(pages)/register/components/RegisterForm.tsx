@@ -3,14 +3,51 @@
 import { tryToRegisterUserAction } from '@/app/(pages)/register/action';
 import { CustomInput } from '@/app/components/CustomInput';
 import { CustomSelect } from '@/app/components/CustomSelect';
-import { Box, Button, Text } from '@primer/react';
-import { useFormState } from 'react-dom';
+import { CopyIcon } from '@primer/octicons-react';
+import { Box, Button, Flash, Text } from '@primer/react';
+import { useFormState, useFormStatus } from 'react-dom';
 
 export function RegisterForm() {
   const [state, action] = useFormState(tryToRegisterUserAction, null);
+  const { pending } = useFormStatus();
 
   function getErrorMessage(path: string) {
-    return state?.errors.find((error) => error.path.includes(path))?.message;
+    return state?.errors?.find((error) => error.path.includes(path))?.message;
+  }
+
+  if (state?.data) {
+    // TODO: improve this message and add functionality
+    return (
+      <Flash
+        sx={{
+          maxWidth: 500,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+        }}
+        variant="warning"
+        title={'Solicitação de matrícula enviada com sucesso!'}
+      >
+        <p>{state.data.message}</p>
+        <p>
+          Por enquanto, é muito importante que você guarde a sua chave privada
+          em um local seguro. Importante também não mostrar para ninguém.
+        </p>
+        <span>
+          Clique aqui <CopyIcon /> para copiar sua chave privada.
+        </span>
+        <Button
+          variant="primary"
+          sx={{
+            mt: 4,
+            display: 'flex',
+            width: '100%',
+          }}
+        >
+          Logar na conta
+        </Button>
+      </Flash>
+    );
   }
 
   return (
@@ -104,6 +141,7 @@ export function RegisterForm() {
       <CustomInput
         label="Número"
         name="number"
+        type="number"
         required
         error={getErrorMessage('number')}
       />
@@ -152,10 +190,13 @@ export function RegisterForm() {
       />
 
       <Button
+        disabled={pending}
+        loading={pending}
         variant="primary"
         type="submit"
         sx={{
           mt: 2,
+          width: '100%',
         }}
       >
         Enviar solicitação de matrícula
