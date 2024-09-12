@@ -1,5 +1,7 @@
 import crypto from 'crypto';
 
+export type CryptographyService = typeof cryptography;
+
 export const cryptography = Object.freeze({
   generateKeyPairs,
   encryptData,
