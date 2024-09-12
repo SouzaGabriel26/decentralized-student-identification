@@ -1,5 +1,6 @@
 import { UserRepository } from '@/repositories/userRepository';
 import { CryptographyService } from '@/services/cryptography';
+import { LambdaService } from '@/services/lambda';
 import bcrypt from 'bcryptjs';
 import { z, ZodIssue } from 'zod';
 
@@ -19,6 +20,7 @@ export type RegisterUserInput = {
 
 export function createRegisterUserUseCase(
   cryptographyService: CryptographyService,
+  lambdaService: LambdaService,
   userRepository: UserRepository,
 ) {
   return Object.freeze({
@@ -74,8 +76,9 @@ export function createRegisterUserUseCase(
       publicKey,
     });
 
+    const { file_url } = await lambdaService.uploadFile(input.photo);
+
     // TODO: delete this information after admin approval
-    // TODO: handle photo upload (photoUploadService dependency)
     await userRepository.createPendingData(createdUserId, {
       address: input.address,
       cep: input.cep,
@@ -85,7 +88,7 @@ export function createRegisterUserUseCase(
       number: input.number,
       email: input.email,
       name: input.name,
-      photoUrl: '',
+      photoUrl: file_url,
     });
 
     // show privateKey just once
