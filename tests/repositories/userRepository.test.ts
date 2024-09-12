@@ -1,5 +1,5 @@
 import prismaClient from '@/lib/prismaClient';
-import { userRepository } from '@/repositories/userRepository';
+import { createUserRepository } from '@/repositories/userRepository';
 
 import { randomBytes, randomUUID } from 'node:crypto';
 
@@ -24,6 +24,7 @@ describe('> User Repository', () => {
       },
     });
 
+    const userRepository = createUserRepository();
     const userFoundById = await userRepository.findById(createdUser.id);
 
     expect(userFoundById?.id).toBe(createdUser.id);
@@ -42,6 +43,7 @@ describe('> User Repository', () => {
       },
     });
 
+    const userRepository = createUserRepository();
     const userFoundByEmail = await userRepository.findByEmail(email);
 
     expect(userFoundByEmail?.email).toStrictEqual(email);
@@ -55,6 +57,7 @@ describe('> User Repository', () => {
       publicKey: randomUUID(),
     };
 
+    const userRepository = createUserRepository();
     const createdUser = await userRepository.create(input);
 
     expect(createdUser).toStrictEqual({
@@ -88,6 +91,7 @@ describe('> User Repository', () => {
       photoUrl: 'http://test.com/photo.jpg',
     };
 
+    const userRepository = createUserRepository();
     const createdPendingData = await userRepository.createPendingData(
       userId,
       input,

@@ -26,8 +26,17 @@ type CreatePendingDataInput = {
   photoUrl: string;
 };
 
-class UserRepository {
-  async findById(id: string): Promise<Omit<User, 'password'> | null> {
+export type UserRepository = ReturnType<typeof createUserRepository>;
+
+export function createUserRepository() {
+  return Object.freeze({
+    findById,
+    findByEmail,
+    create,
+    createPendingData,
+  });
+
+  async function findById(id: string): Promise<Omit<User, 'password'> | null> {
     return await prismaClient.user.findUnique({
       where: {
         id,
@@ -43,7 +52,9 @@ class UserRepository {
     });
   }
 
-  async findByEmail(email: string): Promise<Omit<User, 'password'> | null> {
+  async function findByEmail(
+    email: string,
+  ): Promise<Omit<User, 'password'> | null> {
     return await prismaClient.user.findUnique({
       where: {
         email,
@@ -59,7 +70,7 @@ class UserRepository {
     });
   }
 
-  async create(input: CreateUserInput): Promise<CreateUserOutput> {
+  async function create(input: CreateUserInput): Promise<CreateUserOutput> {
     return await prismaClient.user.create({
       data: {
         name: input.name,
@@ -75,7 +86,10 @@ class UserRepository {
     });
   }
 
-  async createPendingData(userId: string, input: CreatePendingDataInput) {
+  async function createPendingData(
+    userId: string,
+    input: CreatePendingDataInput,
+  ) {
     return await prismaClient.userPendingData.create({
       data: {
         userId,
@@ -98,5 +112,3 @@ class UserRepository {
     });
   }
 }
-
-export const userRepository = new UserRepository();
