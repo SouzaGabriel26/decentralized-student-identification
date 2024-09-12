@@ -1,6 +1,6 @@
 import { BaseStyles, theme, ThemeProvider } from '@primer/react';
 import type { Metadata } from 'next';
-import { PageLayout } from './page-layout';
+import { PageLayout } from './pageLayout';
 import StyledComponentsRegistry from './StyledComponentsRegistry';
 
 export const metadata: Metadata = {
