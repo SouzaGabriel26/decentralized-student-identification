@@ -28,7 +28,16 @@ async function uploadFileTOS3(file: File, presignedUrl: string) {
   return data;
 }
 
+async function uploadFile(file: File) {
+  const { file_url, presigned_url } = await getPresignedUrl(file);
+  await uploadFileTOS3(file, presigned_url);
+  return {
+    file_url,
+  };
+}
+
 export const lambda = Object.freeze({
-  getPresignedUrl,
-  uploadFileTOS3,
+  uploadFile,
 });
+
+export type LambdaService = typeof lambda;

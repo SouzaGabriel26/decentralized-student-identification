@@ -1,6 +1,7 @@
 import prismaClient from '@/lib/prismaClient';
 import { createUserRepository } from '@/repositories/userRepository';
 import { cryptography } from '@/services/cryptography';
+import { LambdaService } from '@/services/lambda';
 import {
   createRegisterUserUseCase,
   RegisterUserInput,
@@ -11,10 +12,19 @@ beforeAll(async () => {
 });
 
 describe('> Register User Use Case', () => {
+  const mockedLambdaService: LambdaService = {
+    uploadFile: async (_file: File) => {
+      return {
+        file_url: '',
+      };
+    },
+  };
+
   it('should return a error when send at least one invalid input field', async () => {
     const userRepository = createUserRepository();
     const { registerUserUseCase } = createRegisterUserUseCase(
       cryptography,
+      mockedLambdaService,
       userRepository,
     );
 
@@ -50,6 +60,7 @@ describe('> Register User Use Case', () => {
     const userRepository = createUserRepository();
     const { registerUserUseCase } = createRegisterUserUseCase(
       cryptography,
+      mockedLambdaService,
       userRepository,
     );
 

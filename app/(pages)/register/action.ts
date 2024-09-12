@@ -2,6 +2,7 @@
 
 import { createUserRepository } from '@/repositories/userRepository';
 import { cryptography as cryptographyService } from '@/services/cryptography';
+import { lambda as lambdaService } from '@/services/lambda';
 import {
   createRegisterUserUseCase,
   RegisterUserInput,
@@ -16,6 +17,7 @@ export async function tryToRegisterUserAction(
   const userRepository = createUserRepository();
   const { registerUserUseCase } = createRegisterUserUseCase(
     cryptographyService,
+    lambdaService,
     userRepository,
   );
 
