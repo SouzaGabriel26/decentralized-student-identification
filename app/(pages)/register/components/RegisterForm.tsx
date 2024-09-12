@@ -3,13 +3,13 @@
 import { tryToRegisterUserAction } from '@/app/(pages)/register/action';
 import { CustomInput } from '@/app/components/CustomInput';
 import { CustomSelect } from '@/app/components/CustomSelect';
+import { LoadingButton } from '@/app/components/LoadingButton';
 import { CopyIcon } from '@primer/octicons-react';
 import { Box, Button, Flash, Text } from '@primer/react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useFormState } from 'react-dom';
 
 export function RegisterForm() {
   const [state, action] = useFormState(tryToRegisterUserAction, null);
-  const { pending } = useFormStatus();
 
   function getErrorMessage(path: string) {
     return state?.errors?.find((error) => error.path.includes(path))?.message;
@@ -189,18 +189,7 @@ export function RegisterForm() {
         required
       />
 
-      <Button
-        disabled={pending}
-        loading={pending}
-        variant="primary"
-        type="submit"
-        sx={{
-          mt: 2,
-          width: '100%',
-        }}
-      >
-        Enviar solicitação de matrícula
-      </Button>
+      <LoadingButton>Solicitar Matrícula</LoadingButton>
     </form>
   );
 }
