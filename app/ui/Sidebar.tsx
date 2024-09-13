@@ -6,6 +6,7 @@ import {
   InfoIcon,
   ListUnorderedIcon,
   PersonIcon,
+  SignInIcon,
 } from '@primer/octicons-react';
 import { Box, NavList, Text } from '@primer/react';
 import { Route } from 'next';
@@ -120,6 +121,14 @@ const navItems: Array<NavItemProps> = [
     title: 'Cadastro',
     href: '/register',
     icon: <PersonIcon />,
+    auth: {
+      isPrivate: false,
+    },
+  },
+  {
+    title: 'Login',
+    href: '/login',
+    icon: <SignInIcon />,
     auth: {
       isPrivate: false,
     },

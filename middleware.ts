@@ -12,7 +12,7 @@ export async function middleware(request: NextRequest) {
   return NextResponse.redirect(new URL('/', request.url));
 }
 
-const publicRoutes: Array<string> = ['/', '/register'];
+const publicRoutes: Array<string> = ['/', '/register', '/login'];
 
 export const config = {
   matcher: [

@@ -4,9 +4,9 @@ import { tryToRegisterUserAction } from '@/app/(pages)/register/action';
 import { CustomInput } from '@/app/components/CustomInput';
 import { CustomSelect } from '@/app/components/CustomSelect';
 import { LoadingButton } from '@/app/components/LoadingButton';
-import { CopyIcon } from '@primer/octicons-react';
-import { Box, Button, Flash, Text } from '@primer/react';
+import { Box, Text } from '@primer/react';
 import { useFormState } from 'react-dom';
+import { Instructions } from './Instructions';
 
 export function RegisterForm() {
   const [state, action] = useFormState(tryToRegisterUserAction, null);
@@ -16,38 +16,7 @@ export function RegisterForm() {
   }
 
   if (state?.data) {
-    // TODO: improve this message and add functionality
-    return (
-      <Flash
-        sx={{
-          maxWidth: 500,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 2,
-        }}
-        variant="warning"
-        title={'Solicitação de matrícula enviada com sucesso!'}
-      >
-        <p>{state.data.message}</p>
-        <p>
-          Por enquanto, é muito importante que você guarde a sua chave privada
-          em um local seguro. Importante também não mostrar para ninguém.
-        </p>
-        <span>
-          Clique aqui <CopyIcon /> para copiar sua chave privada.
-        </span>
-        <Button
-          variant="primary"
-          sx={{
-            mt: 4,
-            display: 'flex',
-            width: '100%',
-          }}
-        >
-          Logar na conta
-        </Button>
-      </Flash>
-    );
+    return <Instructions data={state.data} />;
   }
 
   return (

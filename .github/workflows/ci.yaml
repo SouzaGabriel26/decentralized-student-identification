@@ -54,7 +54,7 @@ jobs:
         run: cp .env.example .env
 
       - name: Start containers
-        run: pnpm services:up
+        run: pnpm services:up && pnpm services:wait
 
       - name: Run prisma migrations
         run: pnpm migrate

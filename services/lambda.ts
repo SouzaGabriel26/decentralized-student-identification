@@ -4,16 +4,20 @@ type GetPresignedUrlResponse = {
 };
 
 async function getPresignedUrl(file: File) {
-  const url = process.env.LAMBDA_FUNCTION_URL!;
+  try {
+    const url = process.env.LAMBDA_FUNCTION_URL!;
 
-  const data = await fetch(url, {
-    method: 'POST',
-    body: JSON.stringify({
-      fileName: file.name,
-    }),
-  });
+    const data = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify({
+        fileName: file.name,
+      }),
+    });
 
-  return data.json() as Promise<GetPresignedUrlResponse>;
+    return data.json() as Promise<GetPresignedUrlResponse>;
+  } catch {
+    console.warn('Lambda function environment variable not setted!');
+  }
 }
 
 async function uploadFileTOS3(file: File, presignedUrl: string) {
@@ -29,7 +33,14 @@ async function uploadFileTOS3(file: File, presignedUrl: string) {
 }
 
 async function uploadFile(file: File) {
-  const { file_url, presigned_url } = await getPresignedUrl(file);
+  const presignedResult = await getPresignedUrl(file);
+  if (!presignedResult)
+    return {
+      file_url: '',
+    };
+
+  const { file_url, presigned_url } = presignedResult;
+
   await uploadFileTOS3(file, presigned_url);
   return {
     file_url,
