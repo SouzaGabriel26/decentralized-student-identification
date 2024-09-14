@@ -3,7 +3,7 @@ import { CryptographyService } from '@/services/cryptography';
 import bcrypt from 'bcryptjs';
 import { z, ZodIssue } from 'zod';
 
-type LoginInput = {
+export type LoginInput = {
   email: string;
   password: string;
 };
