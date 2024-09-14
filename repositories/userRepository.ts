@@ -35,6 +35,9 @@ export function createUserRepository() {
     create,
     createPendingData,
   });
+  type WithPassword = {
+    withPassword?: boolean;
+  };
 
   async function findById(id: string): Promise<Omit<User, 'password'> | null> {
     return await prismaClient.user.findUnique({
@@ -54,7 +57,8 @@ export function createUserRepository() {
 
   async function findByEmail(
     email: string,
-  ): Promise<Omit<User, 'password'> | null> {
+    { withPassword = false }: WithPassword = {},
+  ) {
     return await prismaClient.user.findUnique({
       where: {
         email,
@@ -66,6 +70,7 @@ export function createUserRepository() {
         publicKey: true,
         status: true,
         createdAt: true,
+        password: withPassword,
       },
     });
   }
