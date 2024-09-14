@@ -83,7 +83,10 @@ function generateToken({ userId }: GenerateTokenProps) {
 
 function verifyToken(token: string) {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET!,
+    ) as GenerateTokenProps;
     return { decoded };
   } catch {
     return {

@@ -1,6 +1,5 @@
-import { CustomInput } from '@/app/components/CustomInput';
-import { LoadingButton } from '@/app/components/LoadingButton';
 import { Box } from '@primer/react';
+import { LoginForm } from './components/LoginForm';
 
 export default function Page() {
   return (
@@ -12,20 +11,7 @@ export default function Page() {
         alignItems: 'center',
       }}
     >
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 2,
-          maxWidth: 400,
-          width: '100%',
-        }}
-      >
-        <CustomInput label="Email" name="email" type="email" />
-        <CustomInput label="Senha" name="password" type="password" />
-
-        <LoadingButton>Entrar</LoadingButton>
-      </Box>
+      <LoginForm />
     </Box>
   );
 }

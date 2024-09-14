@@ -84,6 +84,18 @@ describe('> models/cryptography', () => {
     expect(token.split('.').length).toBe(3);
   });
 
+  test('Invoking "verifyToken" with a invalid token', () => {
+    const { token } = cryptography.generateToken({
+      userId: '123',
+    });
+
+    const result = cryptography.verifyToken(token.concat('invalid'));
+    console.log(result);
+    expect(result).toStrictEqual({
+      error: 'Token inválido ou expirado.',
+    });
+  });
+
   test('Invoking "verifyToken" with valid token', () => {
     const { token } = cryptography.generateToken({
       userId: '123',
