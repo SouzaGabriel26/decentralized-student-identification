@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
 
 export type CryptographyService = typeof cryptography;
 
@@ -6,6 +7,8 @@ export const cryptography = Object.freeze({
   generateKeyPairs,
   encryptData,
   decryptData,
+  generateToken,
+  verifyToken,
 });
 
 type GenerateKeyPairsProps = {
@@ -63,6 +66,28 @@ function decryptData({
   } catch {
     return {
       error: 'Senha inválida para chave privada.',
+    };
+  }
+}
+
+type GenerateTokenProps = {
+  userId: string;
+};
+
+function generateToken({ userId }: GenerateTokenProps) {
+  const token = jwt.sign({ userId }, process.env.JWT_SECRET!, {
+    expiresIn: '1d',
+  });
+  return { token };
+}
+
+function verifyToken(token: string) {
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    return { decoded };
+  } catch {
+    return {
+      error: 'Token inválido ou expirado.',
     };
   }
 }

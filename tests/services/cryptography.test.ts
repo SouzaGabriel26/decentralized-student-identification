@@ -75,4 +75,27 @@ describe('> models/cryptography', () => {
       error: 'Senha inválida para chave privada.',
     });
   });
+
+  test('Invoking "generateToken" with userId', () => {
+    const { token } = cryptography.generateToken({
+      userId: '123',
+    });
+
+    expect(token.split('.').length).toBe(3);
+  });
+
+  test('Invoking "verifyToken" with valid token', () => {
+    const { token } = cryptography.generateToken({
+      userId: '123',
+    });
+
+    const result = cryptography.verifyToken(token);
+    expect(result).toStrictEqual({
+      decoded: {
+        userId: '123',
+        iat: expect.any(Number),
+        exp: expect.any(Number),
+      },
+    });
+  });
 });
