@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import jwt from 'jsonwebtoken';
+import { jwtVerify, SignJWT } from 'jose';
 
 export type CryptographyService = typeof cryptography;
 
@@ -74,20 +74,27 @@ type GenerateTokenProps = {
   userId: string;
 };
 
-function generateToken({ userId }: GenerateTokenProps) {
-  const token = jwt.sign({ userId }, process.env.JWT_SECRET!, {
-    expiresIn: '1d',
-  });
+async function generateToken({ userId }: GenerateTokenProps) {
+  const token = await new SignJWT({ sub: userId })
+    .setProtectedHeader({
+      alg: 'HS256',
+      typ: 'JWT',
+    })
+    .setExpirationTime('1d')
+    .setIssuedAt()
+    .sign(new TextEncoder().encode(process.env.JWT_SECRET!));
+
   return { token };
 }
 
-function verifyToken(token: string) {
+async function verifyToken(token: string) {
   try {
-    const decoded = jwt.verify(
+    const { payload } = await jwtVerify(
       token,
-      process.env.JWT_SECRET!,
-    ) as GenerateTokenProps;
-    return { decoded };
+      new TextEncoder().encode(process.env.JWT_SECRET!),
+    );
+
+    return payload;
   } catch {
     return {
       error: 'Token inválido ou expirado.',
