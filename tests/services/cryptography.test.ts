@@ -76,38 +76,35 @@ describe('> models/cryptography', () => {
     });
   });
 
-  test('Invoking "generateToken" with userId', () => {
-    const { token } = cryptography.generateToken({
+  test('Invoking "generateToken" with userId', async () => {
+    const { token } = await cryptography.generateToken({
       userId: '123',
     });
 
     expect(token.split('.').length).toBe(3);
   });
 
-  test('Invoking "verifyToken" with a invalid token', () => {
-    const { token } = cryptography.generateToken({
+  test('Invoking "verifyToken" with a invalid token', async () => {
+    const { token } = await cryptography.generateToken({
       userId: '123',
     });
 
-    const result = cryptography.verifyToken(token.concat('invalid'));
-    console.log(result);
+    const result = await cryptography.verifyToken(token.concat('invalid'));
     expect(result).toStrictEqual({
       error: 'Token inválido ou expirado.',
     });
   });
 
-  test('Invoking "verifyToken" with valid token', () => {
-    const { token } = cryptography.generateToken({
+  test('Invoking "verifyToken" with valid token', async () => {
+    const { token } = await cryptography.generateToken({
       userId: '123',
     });
 
-    const result = cryptography.verifyToken(token);
+    const result = await cryptography.verifyToken(token);
     expect(result).toStrictEqual({
-      decoded: {
-        userId: '123',
-        iat: expect.any(Number),
-        exp: expect.any(Number),
-      },
+      sub: '123',
+      iat: expect.any(Number),
+      exp: expect.any(Number),
     });
   });
 });

@@ -53,7 +53,7 @@ export function createLoginUseCase(
       };
     }
 
-    const { token } = cryptographyService.generateToken({
+    const { token } = await cryptographyService.generateToken({
       userId: user.id,
     });
 
