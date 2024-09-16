@@ -1,27 +1,37 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { cryptography } from './services/cryptography';
+import { navItems } from './utils/navItems';
 
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const accessToken = request.cookies.get('access:token')?.value;
+  const response = NextResponse.next();
 
-  if (publicRoutes.includes(pathname)) {
-    return NextResponse.next();
+  const onlyNotSignedInPages = navItems
+    .filter((item) => item.auth.onlyNotSignedIn)
+    .map((item) => item.href as string);
+
+  if (accessToken) {
+    try {
+      const { sub } = await cryptography.verifyToken(accessToken);
+
+      if (onlyNotSignedInPages.includes(request.nextUrl.pathname) && sub) {
+        return NextResponse.redirect(new URL('/', request.url));
+      }
+
+      if (sub) {
+        response.headers.set('x-user-id', sub);
+      }
+    } catch (error) {
+      console.log(error);
+      response.cookies.delete('access:token');
+    }
   }
 
-  // TODO: verify JWT token
-  console.log('Private route...');
-  return NextResponse.redirect(new URL('/', request.url));
+  return response;
 }
-
-const publicRoutes: Array<string> = ['/', '/register', '/login'];
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico, sitemap.xml, robots.txt (metadata files)
-     */
     '/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
   ],
 };
