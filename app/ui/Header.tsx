@@ -1,7 +1,10 @@
 import { ThemeSwitcher } from '@/app/components/ThemeSwitcher';
+import { identity } from '@/utils/idendity';
 import { Box, BoxProps, Text } from '@primer/react';
 
-export function Header({ ...props }: BoxProps) {
+export async function Header({ ...props }: BoxProps) {
+  const signedUser = await identity.isLoggedIn();
+
   return (
     <Box
       as="header"
@@ -24,7 +27,18 @@ export function Header({ ...props }: BoxProps) {
       >
         Logo FAESA
       </Text>
-      <ThemeSwitcher />
+
+      <Box
+        sx={{
+          display: 'flex',
+          alignContent: 'center',
+          justifyContent: 'center',
+          gap: 3,
+        }}
+      >
+        <ThemeSwitcher />
+        {signedUser && <Text>{signedUser.name}</Text>}
+      </Box>
     </Box>
   );
 }
