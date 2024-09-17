@@ -3,23 +3,33 @@ import { cryptography } from './services/cryptography';
 import { navItems } from './utils/navItems';
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
   const accessToken = request.cookies.get('access:token')?.value;
   const response = NextResponse.next();
 
-  const onlyNotSignedInPages = navItems
-    .filter((item) => item.auth.onlyNotSignedIn)
+  const privatePages = navItems
+    .filter((item) => item.auth.isPrivate)
     .map((item) => item.href as string);
+
+  if (!accessToken && privatePages.includes(pathname)) {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
 
   if (accessToken) {
     try {
       const { sub } = await cryptography.verifyToken(accessToken);
 
-      if (onlyNotSignedInPages.includes(request.nextUrl.pathname) && sub) {
-        return NextResponse.redirect(new URL('/', request.url));
-      }
-
       if (sub) {
         response.headers.set('x-user-id', sub);
+      }
+
+      const onlyNotSignedInPages = navItems
+        .filter((item) => item.auth.onlyNotSignedIn)
+        .map((item) => item.href as string);
+
+      if (onlyNotSignedInPages.includes(pathname) && sub) {
+        return NextResponse.redirect(new URL('/', request.url));
       }
     } catch (error) {
       console.log(error);
