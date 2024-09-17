@@ -1,12 +1,11 @@
-import { cryptography } from '@/services/cryptography';
-import { constants } from '@/utils/constants';
-import { navItems } from '@/utils/navItems';
 import { NextRequest, NextResponse } from 'next/server';
+import { cryptography } from './services/cryptography';
+import { navItems } from './utils/navItems';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const accessToken = request.cookies.get(constants.access_token_key)?.value;
+  const accessToken = request.cookies.get('access:token')?.value;
   const response = NextResponse.next();
 
   const privatePages = navItems
@@ -19,22 +18,22 @@ export async function middleware(request: NextRequest) {
 
   if (accessToken) {
     try {
-      const { sub: userId } = await cryptography.verifyToken(accessToken);
+      const { sub } = await cryptography.verifyToken(accessToken);
 
-      if (userId) {
-        response.headers.set(constants.user_id_header_key, userId);
+      if (sub) {
+        response.headers.set('x-user-id', sub);
       }
 
       const onlyNotSignedInPages = navItems
         .filter((item) => item.auth.onlyNotSignedIn)
         .map((item) => item.href as string);
 
-      if (onlyNotSignedInPages.includes(pathname) && userId) {
+      if (onlyNotSignedInPages.includes(pathname) && sub) {
         return NextResponse.redirect(new URL('/', request.url));
       }
     } catch (error) {
       console.log(error);
-      response.cookies.delete(constants.access_token_key);
+      response.cookies.delete('access:token');
     }
   }
 

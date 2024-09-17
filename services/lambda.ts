@@ -1,5 +1,3 @@
-import { constants } from '@/utils/constants';
-
 type GetPresignedUrlResponse = {
   presigned_url: string;
   file_url: string;
@@ -7,7 +5,9 @@ type GetPresignedUrlResponse = {
 
 async function getPresignedUrl(file: File) {
   try {
-    const data = await fetch(constants.lambda_function_url, {
+    const url = process.env.LAMBDA_FUNCTION_URL!;
+
+    const data = await fetch(url, {
       method: 'POST',
       body: JSON.stringify({
         fileName: file.name,
