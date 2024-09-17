@@ -1,6 +1,17 @@
 import { ThemeSwitcher } from '@/app/components/ThemeSwitcher';
 import { identity } from '@/utils/idendity';
 import { Box, BoxProps, Text } from '@primer/react';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { UserMenu } from '../components/UserMenu';
+
+async function signOutAction() {
+  'use server';
+
+  cookies().delete('access:token');
+
+  return redirect('/login');
+}
 
 export async function Header({ ...props }: BoxProps) {
   const signedUser = await identity.isLoggedIn();
@@ -37,7 +48,9 @@ export async function Header({ ...props }: BoxProps) {
         }}
       >
         <ThemeSwitcher />
-        {signedUser && <Text>{signedUser.name}</Text>}
+        {signedUser && (
+          <UserMenu name={signedUser.name} signOut={signOutAction} />
+        )}
       </Box>
     </Box>
   );
