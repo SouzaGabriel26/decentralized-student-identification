@@ -1,3 +1,4 @@
+import { constants } from '@/utils/constants';
 import crypto from 'crypto';
 import { jwtVerify, SignJWT } from 'jose';
 
@@ -82,7 +83,7 @@ async function generateToken({ userId }: GenerateTokenProps) {
     })
     .setExpirationTime('1d')
     .setIssuedAt()
-    .sign(new TextEncoder().encode(process.env.JWT_SECRET!));
+    .sign(new TextEncoder().encode(constants.jwt_secret));
 
   return { token };
 }
@@ -91,7 +92,7 @@ async function verifyToken(token: string) {
   try {
     const { payload } = await jwtVerify(
       token,
-      new TextEncoder().encode(process.env.JWT_SECRET!),
+      new TextEncoder().encode(constants.jwt_secret),
     );
 
     return payload;
