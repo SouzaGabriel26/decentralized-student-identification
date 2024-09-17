@@ -1,5 +1,4 @@
 import { ThemeSwitcher } from '@/app/components/ThemeSwitcher';
-import { constants } from '@/utils/constants';
 import { identity } from '@/utils/idendity';
 import { Box, BoxProps, Text } from '@primer/react';
 import { cookies } from 'next/headers';
@@ -9,7 +8,7 @@ import { UserMenu } from '../components/UserMenu';
 async function signOutAction() {
   'use server';
 
-  cookies().delete(constants.access_token_key);
+  cookies().delete('access:token');
 
   return redirect('/login');
 }

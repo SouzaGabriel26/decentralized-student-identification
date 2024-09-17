@@ -3,7 +3,6 @@
 import { createUserRepository } from '@/repositories/userRepository';
 import { cryptography } from '@/services/cryptography';
 import { createLoginUseCase, LoginInput } from '@/useCases/loginUseCase';
-import { constants } from '@/utils/constants';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
@@ -21,7 +20,7 @@ export async function tryToLoginAction(_state: unknown, formData: FormData) {
   if (resultFromTryToLogin.data) {
     const { token } = resultFromTryToLogin.data;
     const sevenDaysInMilliseconds = 60 * 60 * 24 * 7 * 1000;
-    cookies().set(constants.access_token_key, token, {
+    cookies().set('access:token', token, {
       expires: new Date(Date.now() + sevenDaysInMilliseconds),
       httpOnly: true,
     });
