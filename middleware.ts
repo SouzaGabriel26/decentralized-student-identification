@@ -1,6 +1,6 @@
-import { cryptography } from '@/services/cryptography';
 import { constants } from '@/utils/constants';
 import { navItems } from '@/utils/navItems';
+import { jwtVerify } from 'jose';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function middleware(request: NextRequest) {
@@ -19,8 +19,12 @@ export async function middleware(request: NextRequest) {
 
   if (accessToken) {
     try {
-      const { sub: userId } = await cryptography.verifyToken(accessToken);
+      const { payload } = await jwtVerify(
+        accessToken,
+        new TextEncoder().encode(constants.jwt_secret),
+      );
 
+      const { sub: userId } = payload;
       if (userId) {
         response.headers.set(constants.user_id_header_key, userId);
       }
@@ -32,8 +36,7 @@ export async function middleware(request: NextRequest) {
       if (onlyNotSignedInPages.includes(pathname) && userId) {
         return NextResponse.redirect(new URL('/', request.url));
       }
-    } catch (error) {
-      console.log(error);
+    } catch {
       response.cookies.delete(constants.access_token_key);
     }
   }

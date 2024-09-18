@@ -51,6 +51,7 @@ export function createUserRepository() {
         publicKey: true,
         status: true,
         createdAt: true,
+        role: true,
       },
     });
   }

@@ -5,7 +5,7 @@ import { NavListItem } from '../components/NavListItem';
 
 export async function Sidebar() {
   const userSignedIn = await identity.isLoggedIn();
-  const isUserAdmin = false;
+  const isUserAdmin = userSignedIn && userSignedIn.role === 'ADMIN';
 
   return (
     <Box
