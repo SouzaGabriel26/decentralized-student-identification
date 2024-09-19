@@ -16,6 +16,7 @@ export type NavItemProps = {
   auth: {
     isPrivate: boolean;
     onlyAdmin?: boolean;
+    onlyStudent?: boolean;
     onlyNotSignedIn?: boolean;
   };
 };
@@ -53,6 +54,7 @@ export const navItems: Array<NavItemProps> = [
     icon: <InfoIcon />,
     auth: {
       isPrivate: true,
+      onlyStudent: true,
     },
   },
   {
@@ -61,6 +63,7 @@ export const navItems: Array<NavItemProps> = [
     icon: <IdBadgeIcon />,
     auth: {
       isPrivate: true,
+      onlyStudent: true,
     },
   },
   {
