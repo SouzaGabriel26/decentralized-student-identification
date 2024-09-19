@@ -5,7 +5,9 @@ import { redirect, RedirectType } from 'next/navigation';
 
 export default async function Page() {
   const signedUser = await identity.isLoggedIn();
-  if (!signedUser) return redirect('/', RedirectType.replace);
+  if (!signedUser || signedUser.role === 'ADMIN') {
+    return redirect('/', RedirectType.replace);
+  }
 
   if (signedUser.status !== 'APPROVED') {
     return (

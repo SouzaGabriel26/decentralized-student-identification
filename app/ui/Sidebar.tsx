@@ -30,8 +30,9 @@ export async function Sidebar() {
       >
         {navItems.map((item) => {
           if (!userSignedIn && item.auth.isPrivate) return null;
-          if (!isUserAdmin && item.auth.onlyAdmin) return null;
           if (userSignedIn && item.auth.onlyNotSignedIn) return null;
+          if (!isUserAdmin && item.auth.onlyAdmin) return null;
+          if (isUserAdmin && item.auth.onlyStudent) return null;
 
           return <NavListItem key={item.href} item={item} />;
         })}

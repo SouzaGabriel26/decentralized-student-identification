@@ -19,7 +19,7 @@ export function NavListItem({ item }: NavListItemProps) {
           width: 224,
         },
         '@media (min-width: 480px) and (max-width: 1919px)': {
-          width: 170,
+          width: 175,
         },
       }}
       as={Link}

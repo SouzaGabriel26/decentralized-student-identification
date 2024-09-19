@@ -21,9 +21,15 @@ export default async function Home() {
         </Link>
       )}
 
-      {signedUser && (
+      {signedUser && signedUser.role === 'USER' && (
         <Link style={{ color: '#539bf5' }} href="/student-card">
           Ver carteira
+        </Link>
+      )}
+
+      {signedUser && signedUser.role === 'ADMIN' && (
+        <Link style={{ color: '#539bf5' }} href="/pending-cards">
+          Verificar carteiras pendentes
         </Link>
       )}
     </Box>

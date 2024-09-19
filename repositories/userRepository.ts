@@ -34,6 +34,7 @@ export function createUserRepository() {
     findByEmail,
     create,
     createPendingData,
+    findPendingUsers,
   });
   type WithPassword = {
     withPassword?: boolean;
@@ -114,6 +115,16 @@ export function createUserRepository() {
         email: true,
         userId: true,
         id: true,
+      },
+    });
+  }
+
+  async function findPendingUsers() {
+    return await prismaClient.userPendingData.findMany({
+      where: {
+        user: {
+          status: 'PENDING',
+        },
       },
     });
   }
