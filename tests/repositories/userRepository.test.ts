@@ -104,4 +104,50 @@ describe('> User Repository', () => {
       email: input.email,
     });
   });
+
+  it('should retrieve all pending users data', async () => {
+    await prismaClient.userPendingData.deleteMany();
+
+    const userRepository = createUserRepository();
+
+    const createdUser = await userRepository.create({
+      name: 'pending user test',
+      email: 'pending@mail.com',
+      passwordHash: randomUUID(),
+      publicKey: randomUUID(),
+    });
+
+    const input = {
+      name: createdUser.name,
+      email: createdUser.email,
+      cpf: '12345678901',
+      cep: '12345678',
+      address: 'Rua Teste',
+      number: '123',
+      complement: 'Casa',
+      course: 'Ciência da Computação',
+      photoUrl: 'http://test.com/photo.jpg',
+    };
+
+    await userRepository.createPendingData(createdUser.id, input);
+
+    const pendingUsers = await userRepository.findPendingUsers();
+
+    expect(pendingUsers).toStrictEqual([
+      {
+        id: expect.any(String),
+        userId: expect.any(String),
+        name: 'pending user test',
+        email: 'pending@mail.com',
+        cpf: '12345678901',
+        cep: '12345678',
+        address: 'Rua Teste',
+        number: '123',
+        complement: 'Casa',
+        course: 'Ciência da Computação',
+        photoUrl: 'http://test.com/photo.jpg',
+        createdAt: expect.any(Date),
+      },
+    ]);
+  });
 });
