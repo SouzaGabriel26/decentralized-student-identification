@@ -1,7 +1,7 @@
 'use client';
 
-import { CheckIcon, XIcon } from '@primer/octicons-react';
-import { Avatar, Button } from '@primer/react';
+import { KebabHorizontalIcon } from '@primer/octicons-react';
+import { ActionList, ActionMenu, Avatar } from '@primer/react';
 import { DataTable, Table } from '@primer/react/drafts';
 import { UserPendingData } from '@prisma/client';
 
@@ -76,30 +76,7 @@ export function PendingTable({ pendingCards }: PendingTableProps) {
             renderCell: (row) => {
               return (
                 <Table.Actions>
-                  <Button
-                    variant="primary"
-                    title="Aprovar solicitação"
-                    onClick={() => {
-                      // TODO: delete from UserPendingData where id = row.id
-                      console.log(
-                        `APROVAR:\n- ID: ${row.id}\n- UserID: ${row.userId}`,
-                      );
-                    }}
-                  >
-                    <CheckIcon />
-                  </Button>
-
-                  <Button
-                    variant="danger"
-                    title="Rejeitar solicitação"
-                    onClick={() => {
-                      console.log(
-                        `REJEITAR:\n- ID: ${row.id}\n- UserID: ${row.userId}`,
-                      );
-                    }}
-                  >
-                    <XIcon />
-                  </Button>
+                  <Actions pendingDataId={row.id} userId={row.userId} />
                 </Table.Actions>
               );
             },
@@ -107,5 +84,49 @@ export function PendingTable({ pendingCards }: PendingTableProps) {
         ]}
       />
     </Table.Container>
+  );
+}
+
+type ActionsProps = {
+  pendingDataId: string;
+  userId: string;
+};
+
+function Actions({ pendingDataId, userId }: ActionsProps) {
+  return (
+    <ActionMenu>
+      <ActionMenu.Button>
+        <KebabHorizontalIcon />
+      </ActionMenu.Button>
+      <ActionMenu.Overlay
+        width="small"
+        sx={{
+          width: 'fit-content',
+        }}
+      >
+        <ActionList>
+          <ActionList.Item
+            onClick={() => {
+              // TODO: delete from UserPendingData where id = row.id
+              console.log(
+                `APROVAR:\n- ID: ${pendingDataId}\n- UserID: ${userId}`,
+              );
+            }}
+          >
+            Aprovar
+          </ActionList.Item>
+
+          <ActionList.Item
+            onClick={() => {
+              console.log(
+                `REJEITAR:\n- ID: ${pendingDataId}\n- UserID: ${userId}`,
+              );
+            }}
+          >
+            Rejeitar
+          </ActionList.Item>
+        </ActionList>
+      </ActionMenu.Overlay>
+    </ActionMenu>
   );
 }
