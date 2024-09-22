@@ -3,6 +3,7 @@ import { identity } from '@/utils/idendity';
 import { Box, Text } from '@primer/react';
 import { redirect, RedirectType } from 'next/navigation';
 import { PendingTable } from './components/PendingTable';
+import Web3Connection from './components/Web3Connection';
 
 export default async function Page() {
   const signedUser = await identity.isLoggedIn();
@@ -27,6 +28,7 @@ export default async function Page() {
         overflowY: 'auto',
       }}
     >
+      <Web3Connection />
       <PendingTable pendingCards={pendingCards} />
     </Box>
   );
