@@ -1,5 +1,7 @@
 'use client';
 
+import { abi } from '@/contract/smart-contract-abi';
+import { constants } from '@/utils/constants';
 import { Box, Text } from '@primer/react';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
@@ -61,6 +63,19 @@ export default function Web3Connection() {
   useEffect(() => {
     if (web3) {
       getAccounts();
+      getTotalCardsIssued();
+    }
+
+    async function getTotalCardsIssued() {
+      if (!web3) return;
+
+      const contract = new web3.eth.Contract(
+        abi,
+        constants.smart_contract_address,
+      );
+
+      const totalCardsIssued = await contract.methods.totalCardsIssued().call();
+      console.log({ totalCardsIssued });
     }
 
     async function getAccounts() {
