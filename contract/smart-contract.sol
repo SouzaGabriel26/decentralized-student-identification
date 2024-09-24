@@ -23,6 +23,13 @@ contract StudentIdentification {
         _;
     }
 
+    event CardIssued(address indexed _studentPublicKey, uint256 _expDate);
+    event CardInvalidated(address indexed _studentPublicKey);
+    event CardExpirationExtended(
+        address indexed _studentPublicKey,
+        uint256 _newExpDate
+    );
+
     function issueCard(
         string memory _hashCard,
         uint256 _expDate,
@@ -41,6 +48,8 @@ contract StudentIdentification {
             studentPublicKey: _studentPublicKey,
             isValid: true
         });
+
+        emit CardIssued(_studentPublicKey, _expDate);
     }
 
     function getCard(
@@ -61,6 +70,8 @@ contract StudentIdentification {
         );
 
         studentCards[_studentPublicKey].isValid = false;
+
+        emit CardInvalidated(_studentPublicKey);
     }
 
     function extendCardExpiration(
@@ -75,7 +86,12 @@ contract StudentIdentification {
             _newExpDate > studentCards[_studentPublicKey].expDate,
             'Nova data de expiracao deve ser maior que a atual.'
         );
+        require(
+            studentCards[_studentPublicKey].isValid == true,
+            'Carteira invalidada.'
+        );
 
         studentCards[_studentPublicKey].expDate = _newExpDate;
+        emit CardExpirationExtended(_studentPublicKey, _newExpDate);
     }
 }
