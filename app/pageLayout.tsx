@@ -1,13 +1,17 @@
 import { Header } from '@/app/ui/Header';
 import { Sidebar } from '@/app/ui/Sidebar';
+import { identity } from '@/utils/idendity';
 import { Box } from '@primer/react';
 import { ReactNode } from 'react';
+import Web3Provider from './contexts/Web3Context';
 
 type Props = {
   children: ReactNode;
 };
 
-export function PageLayout({ children }: Props) {
+export async function PageLayout({ children }: Props) {
+  const userSigned = await identity.isLoggedIn();
+
   return (
     <Box
       sx={{
@@ -34,7 +38,11 @@ export function PageLayout({ children }: Props) {
             width: '100%',
           }}
         >
-          {children}
+          {userSigned && userSigned.role === 'ADMIN' ? (
+            <Web3Provider>{children}</Web3Provider>
+          ) : (
+            children
+          )}
         </Box>
       </Box>
     </Box>
