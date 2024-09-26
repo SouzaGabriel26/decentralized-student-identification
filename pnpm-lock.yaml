@@ -23,6 +23,9 @@ importers:
       jose:
         specifier: ^5.9.2
         version: 5.9.2
+      js-sha3:
+        specifier: ^0.9.3
+        version: 0.9.3
       next:
         specifier: 14.2.3
         version: 14.2.3(@babel/core@7.25.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -2182,6 +2185,9 @@ packages:
 
   jose@5.9.2:
     resolution: {integrity: sha512-ILI2xx/I57b20sd7rHZvgiiQrmp2mcotwsAH+5ajbpFQbrYVQdNHYlQhoA5cFb78CgtBOxtC05TeA+mcgkuCqQ==}
+
+  js-sha3@0.9.3:
+    resolution: {integrity: sha512-BcJPCQeLg6WjEx3FE591wVAevlli8lxsxm9/FzV4HXkV49TmBH38Yvrpce6fjbADGMKFrBMGTqrVz3qPIZ88Gg==}
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -5597,6 +5603,8 @@ snapshots:
   jiti@1.21.0: {}
 
   jose@5.9.2: {}
+
+  js-sha3@0.9.3: {}
 
   js-tokens@4.0.0: {}
 
