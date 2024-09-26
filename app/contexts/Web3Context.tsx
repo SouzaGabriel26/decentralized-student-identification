@@ -1,7 +1,9 @@
 'use client';
 
+import { abi } from '@/contract/smart-contract-abi';
+import { constants } from '@/utils/constants';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { Web3 } from 'web3';
+import { Contract, Web3 } from 'web3';
 
 const GANACHE_URL = 'http://localhost:8545' as const;
 
@@ -10,6 +12,7 @@ type Web3ContextType = {
   account: string | null;
   provider: 'GANACHE' | 'INJECTED' | null;
   isLoadingProvider: boolean;
+  contract: Contract<typeof abi> | null;
 };
 
 export const Web3Context = createContext({} as Web3ContextType);
@@ -28,8 +31,14 @@ export default function Web3Provider({
 
     return provider === 'INJECTED'
       ? new Web3(window.ethereum)
-      : new Web3('http://localhost:8545');
+      : new Web3(GANACHE_URL);
   }, [provider]);
+
+  const contract = useMemo(() => {
+    if (!web3) return null;
+
+    return new web3.eth.Contract(abi, constants.smart_contract_address);
+  }, [web3]);
 
   useEffect(() => {
     checkGanacheStatus();
@@ -92,8 +101,9 @@ export default function Web3Provider({
       account,
       provider,
       isLoadingProvider,
+      contract,
     }),
-    [web3, account, provider, isLoadingProvider],
+    [web3, account, provider, isLoadingProvider, contract],
   );
 
   return <Web3Context.Provider value={value}>{children}</Web3Context.Provider>;
