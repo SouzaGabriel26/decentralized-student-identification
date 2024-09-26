@@ -42,6 +42,7 @@ describe('> useCases/loginUseCase', () => {
         email: 'testmail@mail.com',
         password: hashedPassword,
         publicKey: 'publicKey',
+        ethAddress: 'ethAddress',
       },
     });
 
@@ -73,6 +74,7 @@ describe('> useCases/loginUseCase', () => {
         email: 'sucessfultest@mail.com',
         password: hashedPassword,
         publicKey: 'daskjdsajdnasjkdnasjkdn',
+        ethAddress: 'daskjdsajdnasjkdnasjkdn',
       },
     });
 

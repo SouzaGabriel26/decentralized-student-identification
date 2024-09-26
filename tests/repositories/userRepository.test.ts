@@ -18,6 +18,7 @@ describe('> User Repository', () => {
         email,
         password: '123456',
         publicKey: randomUUID(),
+        ethAddress: randomUUID(),
       },
       select: {
         id: true,
@@ -40,6 +41,7 @@ describe('> User Repository', () => {
         email,
         password: '123456asdadasda',
         publicKey: randomUUID(),
+        ethAddress: randomUUID(),
       },
     });
 
@@ -55,6 +57,7 @@ describe('> User Repository', () => {
       email: 'gabriel@mail.com',
       passwordHash: '123456asdsadsadas',
       publicKey: randomUUID(),
+      ethAddress: randomUUID(),
     };
 
     const userRepository = createUserRepository();
@@ -74,6 +77,7 @@ describe('> User Repository', () => {
         email: 'test@mail.com',
         password: randomUUID(),
         publicKey: randomUUID(),
+        ethAddress: randomUUID(),
       },
     });
 
@@ -115,6 +119,7 @@ describe('> User Repository', () => {
       email: 'pending@mail.com',
       passwordHash: randomUUID(),
       publicKey: randomUUID(),
+      ethAddress: randomUUID(),
     });
 
     const input = {

@@ -6,6 +6,7 @@ type CreateUserInput = {
   email: string;
   passwordHash: string;
   publicKey: string;
+  ethAddress: string;
 };
 
 type CreateUserOutput = {
@@ -50,6 +51,7 @@ export function createUserRepository() {
         name: true,
         email: true,
         publicKey: true,
+        ethAddress: true,
         status: true,
         createdAt: true,
         role: true,
@@ -84,6 +86,7 @@ export function createUserRepository() {
         email: input.email,
         password: input.passwordHash,
         publicKey: input.publicKey,
+        ethAddress: input.ethAddress,
       },
       select: {
         id: true,

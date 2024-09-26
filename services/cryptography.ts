@@ -1,6 +1,7 @@
 import { constants } from '@/utils/constants';
 import crypto from 'crypto';
 import { jwtVerify, SignJWT } from 'jose';
+import { keccak256 } from 'js-sha3';
 
 export type CryptographyService = typeof cryptography;
 
@@ -10,6 +11,7 @@ export const cryptography = Object.freeze({
   decryptData,
   generateToken,
   verifyToken,
+  generateEthAddress,
 });
 
 type GenerateKeyPairsProps = {
@@ -101,4 +103,14 @@ async function verifyToken(token: string) {
       error: 'Token inválido ou expirado.',
     };
   }
+}
+
+function generateEthAddress(rsaPublicKey: string) {
+  const sha256Hash = crypto.createHash('sha256').update(rsaPublicKey).digest();
+
+  const keccakHash = keccak256(sha256Hash);
+
+  const address = '0x' + keccakHash.slice(-40);
+
+  return address;
 }

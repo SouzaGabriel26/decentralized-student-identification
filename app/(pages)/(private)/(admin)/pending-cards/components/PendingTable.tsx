@@ -1,31 +1,25 @@
 'use client';
 
 import { useWeb3Context } from '@/app/contexts/Web3Context';
-import { abi } from '@/contract/smart-contract-abi';
-import { constants } from '@/utils/constants';
 import { KebabHorizontalIcon } from '@primer/octicons-react';
 import { ActionList, ActionMenu, Avatar, Box, Text } from '@primer/react';
 import { DataTable, Table } from '@primer/react/drafts';
 import { UserPendingData } from '@prisma/client';
 import { useEffect } from 'react';
+import { encryptUserPendingDataAction } from '../action';
 
 type PendingTableProps = {
   pendingCards: UserPendingData[];
 };
 
 export function PendingTable({ pendingCards }: PendingTableProps) {
-  const { web3Provider, account, provider } = useWeb3Context();
+  const { web3Provider, account, provider, contract } = useWeb3Context();
 
   useEffect(() => {
     getIssuedCards();
 
     async function getIssuedCards() {
-      if (!web3Provider) return;
-
-      const contract = new web3Provider.eth.Contract(
-        abi,
-        constants.smart_contract_address,
-      );
+      if (!web3Provider || !contract) return;
 
       const events = await contract.getPastEvents('CardIssued', {
         fromBlock: 0,
@@ -34,7 +28,7 @@ export function PendingTable({ pendingCards }: PendingTableProps) {
 
       console.log({ events });
     }
-  }, [web3Provider]);
+  }, [web3Provider, contract]);
 
   return (
     <>
@@ -129,7 +123,7 @@ export function PendingTable({ pendingCards }: PendingTableProps) {
               renderCell: (row) => {
                 return (
                   <Table.Actions>
-                    <Actions pendingDataId={row.id} userId={row.userId} />
+                    <Actions userPendingData={row} />
                   </Table.Actions>
                 );
               },
@@ -142,11 +136,55 @@ export function PendingTable({ pendingCards }: PendingTableProps) {
 }
 
 type ActionsProps = {
-  pendingDataId: string;
-  userId: string;
+  userPendingData: UserPendingData;
 };
 
-function Actions({ pendingDataId, userId }: ActionsProps) {
+function Actions({ userPendingData }: ActionsProps) {
+  const { web3Provider, account, contract } = useWeb3Context();
+
+  async function handleIssueCard(userPendingData: UserPendingData) {
+    if (!web3Provider || !contract) return;
+
+    const { data, error } = await encryptUserPendingDataAction(userPendingData);
+    console.log('data, ', data);
+
+    if (!data) {
+      // TODO: handle error
+      console.log(error);
+      return;
+    }
+
+    const currentDate = new Date();
+    const expirationDateInTimestamp = new Date(
+      currentDate.setMonth(currentDate.getMonth() + 6),
+    ).getTime();
+
+    try {
+      const result = await contract.methods
+        .issueCard(
+          data.encryptedData,
+          expirationDateInTimestamp,
+          data.userEthAddress,
+        )
+        .send({
+          from: account ?? undefined,
+          gas: '3000000',
+          gasPrice: web3Provider.utils.toWei('10', 'gwei'),
+        });
+
+      console.log({
+        hashCard: data.encryptedData,
+        expDate: expirationDateInTimestamp,
+        studentPublicKey: data.userEthAddress,
+      });
+
+      console.log({ result });
+    } catch (error) {
+      // TODO: handle error
+      console.log(error);
+    }
+  }
+
   return (
     <ActionMenu>
       <ActionMenu.Button>
@@ -160,11 +198,10 @@ function Actions({ pendingDataId, userId }: ActionsProps) {
       >
         <ActionList>
           <ActionList.Item
-            onClick={() => {
+            onClick={async () => {
+              await handleIssueCard(userPendingData);
+
               // TODO: delete from UserPendingData where id = row.id
-              console.log(
-                `APROVAR:\n- ID: ${pendingDataId}\n- UserID: ${userId}`,
-              );
             }}
           >
             Aprovar
@@ -172,9 +209,7 @@ function Actions({ pendingDataId, userId }: ActionsProps) {
 
           <ActionList.Item
             onClick={() => {
-              console.log(
-                `REJEITAR:\n- ID: ${pendingDataId}\n- UserID: ${userId}`,
-              );
+              console.log('REJEITAR:');
             }}
           >
             Rejeitar

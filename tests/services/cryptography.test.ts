@@ -107,4 +107,13 @@ describe('> models/cryptography', () => {
       exp: expect.any(Number),
     });
   });
+
+  test('Invoking "generateEthAddress" from a publicKey', () => {
+    const { publicKey } = cryptography.generateKeyPairs({
+      passphrase: '123456',
+    });
+
+    const result = cryptography.generateEthAddress(publicKey);
+    expect(result).toMatch(/0x[a-fA-F0-9]{40}/);
+  });
 });

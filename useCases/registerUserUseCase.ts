@@ -66,6 +66,8 @@ export function createRegisterUserUseCase(
       passphrase: input.password,
     });
 
+    const ethAddress = cryptographyService.generateEthAddress(publicKey);
+
     const SALT_ROUNDS = 8;
     const hashedPassword = bcrypt.hashSync(input.password, SALT_ROUNDS);
 
@@ -74,6 +76,7 @@ export function createRegisterUserUseCase(
       name: input.name,
       passwordHash: hashedPassword,
       publicKey,
+      ethAddress,
     });
 
     const { file_url } = await lambdaService.uploadFile(input.photo);
