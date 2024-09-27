@@ -27,10 +27,12 @@ pnpm project:setup
 #### To run the project, paste this command into your terminal:
 
 ```bash
-pnpm dev
+pnpm dev:all
 ```
 
 - This command will:
-  1. compose up docker conteiner;
-  2. wait for conteiner;
-  3. run the development server.
+  1. start ganache local server (concurrently in terminal)
+  2. deploy the smart contract on ganache local server (it will save the contract address in a file)
+  3. compose up docker conteiner;
+  4. wait for conteiner;
+  5. run the development server.

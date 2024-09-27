@@ -1,11 +1,12 @@
 'use client';
 
+import { contractAddress } from '@/contract/contract-address';
 import { abi } from '@/contract/smart-contract-abi';
 import { constants } from '@/utils/constants';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { Contract, Web3 } from 'web3';
 
-const GANACHE_URL = 'http://localhost:8545' as const;
+const IS_PRODUCTION_ENVIRONMENT = process.env.NODE_ENV === 'production';
 
 type Web3ContextType = {
   web3Provider: Web3 | null;
@@ -29,48 +30,30 @@ export default function Web3Provider({
   const web3 = useMemo(() => {
     if (!provider) return null;
 
-    return provider === 'INJECTED'
-      ? new Web3(window.ethereum)
-      : new Web3(GANACHE_URL);
+    if (provider === 'INJECTED') {
+      return new Web3(window.ethereum);
+    }
+
+    return new Web3(constants.ganache_url);
   }, [provider]);
 
   const contract = useMemo(() => {
-    if (!web3) return null;
+    if (!web3 || !provider) return null;
+
+    if (provider === 'GANACHE') {
+      return new web3.eth.Contract(abi, contractAddress);
+    }
 
     return new web3.eth.Contract(abi, constants.smart_contract_address);
-  }, [web3]);
+  }, [web3, provider]);
 
   useEffect(() => {
-    checkGanacheStatus();
-
-    async function checkGanacheStatus() {
-      setIsLoadingProvider(true);
-      try {
-        const response = await fetch(GANACHE_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            jsonrpc: '2.0',
-            method: 'web3_clientVersion',
-            params: [],
-            id: 1,
-          }),
-        });
-
-        if (response.ok) {
-          console.warn('DEVELOPMENT MODE: Ganache is running');
-          setProvider('GANACHE');
-        } else {
-          setProvider(window.ethereum ? 'INJECTED' : null);
-        }
-      } catch (error) {
-        setProvider(window.ethereum ? 'INJECTED' : null);
-      } finally {
-        setIsLoadingProvider(false);
-      }
+    if (IS_PRODUCTION_ENVIRONMENT) {
+      setProvider(window.ethereum ? 'INJECTED' : null);
+      return;
     }
+
+    setProvider('GANACHE');
   }, []);
 
   useEffect(() => {

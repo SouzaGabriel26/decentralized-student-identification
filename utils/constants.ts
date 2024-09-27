@@ -4,6 +4,7 @@ export const constants = Object.freeze({
   lambda_function_url: process.env.LAMBDA_FUNCTION_URL!,
   jwt_secret: process.env.JWT_SECRET!,
   smart_contract_address: '0xb4d514ec4a871841da92dc710caeadc86f90669e',
+  ganache_url: 'http://localhost:8545',
 });
 
 getConstants();
