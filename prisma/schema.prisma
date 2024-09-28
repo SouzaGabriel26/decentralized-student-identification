@@ -54,5 +54,5 @@ model UserPendingData {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@map("(user_pending_data)")
+  @@map("users_pending_data")
 }
