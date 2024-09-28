@@ -75,4 +75,13 @@ export const navItems: Array<NavItemProps> = [
       onlyAdmin: true,
     },
   },
+  {
+    title: 'Carteiras emitidas',
+    href: '/issued-cards',
+    icon: <ListUnorderedIcon />,
+    auth: {
+      isPrivate: true,
+      onlyAdmin: true,
+    },
+  },
 ];

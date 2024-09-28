@@ -1,10 +1,10 @@
 'use client';
 
 import { CheckIcon, CopyIcon } from '@primer/octicons-react';
-import { Button } from '@primer/react';
+import { Button, ButtonProps } from '@primer/react';
 import { ReactNode } from 'react';
 
-type CopyToClipBoardProps = {
+type CopyToClipBoardProps = ButtonProps & {
   contentToCopy: string;
   setIsCopied: (value: boolean) => void;
   isCopied: boolean;
@@ -16,6 +16,7 @@ export function CopyToClipBoard({
   isCopied,
   setIsCopied,
   children,
+  ...props
 }: CopyToClipBoardProps) {
   function handleCopyToClipBoard() {
     navigator.clipboard.writeText(contentToCopy);
@@ -30,6 +31,7 @@ export function CopyToClipBoard({
       }}
       title="Copiar"
       onClick={handleCopyToClipBoard}
+      {...props}
     >
       {isCopied ? <CheckIcon /> : <CopyIcon />}
       {isCopied ? 'Copiado!' : children}
