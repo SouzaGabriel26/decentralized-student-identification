@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import {
   deleteUserPendingDataAction,
   encryptUserPendingDataAction,
+  updateUserStatusAction,
 } from '../action';
 
 type PendingTableProps = {
@@ -169,6 +170,7 @@ function Actions({ userPendingData }: ActionsProps) {
       console.log({ result });
 
       await deleteUserPendingDataAction(userPendingData.id);
+      await updateUserStatusAction(userPendingData.userId, 'APPROVED');
     } catch (error) {
       // TODO: handle error
       console.log(error);

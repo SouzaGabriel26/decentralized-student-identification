@@ -2,7 +2,7 @@
 
 import { createUserRepository } from '@/repositories/userRepository';
 import { cryptography } from '@/services/cryptography';
-import { UserPendingData } from '@prisma/client';
+import { UserPendingData, UserStatus } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 
 export async function encryptUserPendingDataAction(
@@ -30,6 +30,13 @@ export async function encryptUserPendingDataAction(
 export async function deleteUserPendingDataAction(id: string) {
   const userRepository = createUserRepository();
   await userRepository.deletePendingData(id);
+
+  return revalidatePath('/pending-cards');
+}
+
+export async function updateUserStatusAction(id: string, status: UserStatus) {
+  const userRepository = createUserRepository();
+  await userRepository.updateStatus(id, status);
 
   return revalidatePath('/pending-cards');
 }

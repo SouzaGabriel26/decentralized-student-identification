@@ -193,4 +193,23 @@ describe('> User Repository', () => {
 
     expect(pendingUser).toBeNull();
   });
+
+  it('should update user status', async () => {
+    const userRepository = createUserRepository();
+    const createdUser = await userRepository.create({
+      name: 'user to update status',
+      email: 'emailtoupdatestatus@mail.com',
+      ethAddress: randomUUID(),
+      passwordHash: randomUUID(),
+      publicKey: randomUUID(),
+    });
+
+    const userBeforeUpdate = await userRepository.findById(createdUser.id);
+    expect(userBeforeUpdate?.status).toBe('PENDING');
+
+    await userRepository.updateStatus(createdUser.id, 'APPROVED');
+
+    const userAfterUpdate = await userRepository.findById(createdUser.id);
+    expect(userAfterUpdate?.status).toBe('APPROVED');
+  });
 });

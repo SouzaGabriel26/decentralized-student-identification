@@ -1,5 +1,5 @@
 import prismaClient from '@/lib/prismaClient';
-import { User } from '@prisma/client';
+import { User, UserStatus } from '@prisma/client';
 
 type CreateUserInput = {
   name: string;
@@ -37,6 +37,7 @@ export function createUserRepository() {
     createPendingData,
     findPendingUsers,
     deletePendingData,
+    updateStatus,
   });
   type WithPassword = {
     withPassword?: boolean;
@@ -93,6 +94,17 @@ export function createUserRepository() {
         id: true,
         name: true,
         email: true,
+      },
+    });
+  }
+
+  async function updateStatus(id: string, status: UserStatus) {
+    return await prismaClient.user.update({
+      where: {
+        id,
+      },
+      data: {
+        status,
       },
     });
   }
