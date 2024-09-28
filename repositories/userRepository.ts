@@ -36,6 +36,7 @@ export function createUserRepository() {
     create,
     createPendingData,
     findPendingUsers,
+    deletePendingData,
   });
   type WithPassword = {
     withPassword?: boolean;
@@ -127,7 +128,18 @@ export function createUserRepository() {
       where: {
         user: {
           status: 'PENDING',
+          AND: {
+            role: 'USER',
+          },
         },
+      },
+    });
+  }
+
+  async function deletePendingData(id: string) {
+    return await prismaClient.userPendingData.delete({
+      where: {
+        id,
       },
     });
   }
