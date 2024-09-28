@@ -6,7 +6,6 @@ import { ActionList, ActionMenu, Avatar, Box, Text } from '@primer/react';
 import { DataTable, Table } from '@primer/react/drafts';
 import { UserPendingData } from '@prisma/client';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 import { encryptUserPendingDataAction } from '../action';
 
 type PendingTableProps = {
@@ -14,22 +13,7 @@ type PendingTableProps = {
 };
 
 export function PendingTable({ pendingCards }: PendingTableProps) {
-  const { web3Provider, account, provider, contract } = useWeb3Context();
-
-  useEffect(() => {
-    getIssuedCards();
-
-    async function getIssuedCards() {
-      if (!web3Provider || !contract) return;
-
-      const events = await contract.getPastEvents('CardIssued', {
-        fromBlock: 0,
-        toBlock: 'latest',
-      });
-
-      console.log({ events });
-    }
-  }, [web3Provider, contract]);
+  const { account, provider } = useWeb3Context();
 
   return (
     <>
