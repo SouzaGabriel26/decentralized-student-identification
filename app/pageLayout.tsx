@@ -36,6 +36,8 @@ export async function PageLayout({ children }: Props) {
             px: 4,
             py: 2,
             width: '100%',
+            height: '90vh',
+            overflowY: 'auto',
           }}
         >
           {userSigned && userSigned.role === 'ADMIN' ? (

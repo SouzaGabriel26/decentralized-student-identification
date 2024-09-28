@@ -26,6 +26,7 @@ export default function RootLayout({
         style={{
           height: '100%',
           width: '100%',
+          overflowY: 'hidden',
         }}
       >
         <StyledComponentsRegistry>
