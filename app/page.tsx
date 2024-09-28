@@ -10,6 +10,8 @@ export default async function Home() {
       <Text
         sx={{
           display: 'block',
+          fontSize: 20,
+          color: 'slategray',
         }}
       >
         Seja bem vindo ao site da Instituição X

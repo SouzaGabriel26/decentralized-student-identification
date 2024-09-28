@@ -6,7 +6,11 @@ import { ActionList, ActionMenu, Avatar, Box, Text } from '@primer/react';
 import { DataTable, Table } from '@primer/react/drafts';
 import { UserPendingData } from '@prisma/client';
 import { useRouter } from 'next/navigation';
-import { encryptUserPendingDataAction } from '../action';
+import {
+  deleteUserPendingDataAction,
+  encryptUserPendingDataAction,
+  updateUserStatusAction,
+} from '../action';
 
 type PendingTableProps = {
   pendingCards: UserPendingData[];
@@ -165,7 +169,8 @@ function Actions({ userPendingData }: ActionsProps) {
 
       console.log({ result });
 
-      router.refresh();
+      await deleteUserPendingDataAction(userPendingData.id);
+      await updateUserStatusAction(userPendingData.userId, 'APPROVED');
     } catch (error) {
       // TODO: handle error
       console.log(error);

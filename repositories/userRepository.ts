@@ -1,5 +1,5 @@
 import prismaClient from '@/lib/prismaClient';
-import { User } from '@prisma/client';
+import { User, UserStatus } from '@prisma/client';
 
 type CreateUserInput = {
   name: string;
@@ -36,6 +36,8 @@ export function createUserRepository() {
     create,
     createPendingData,
     findPendingUsers,
+    deletePendingData,
+    updateStatus,
   });
   type WithPassword = {
     withPassword?: boolean;
@@ -96,6 +98,17 @@ export function createUserRepository() {
     });
   }
 
+  async function updateStatus(id: string, status: UserStatus) {
+    return await prismaClient.user.update({
+      where: {
+        id,
+      },
+      data: {
+        status,
+      },
+    });
+  }
+
   async function createPendingData(
     userId: string,
     input: CreatePendingDataInput,
@@ -127,7 +140,18 @@ export function createUserRepository() {
       where: {
         user: {
           status: 'PENDING',
+          AND: {
+            role: 'USER',
+          },
         },
+      },
+    });
+  }
+
+  async function deletePendingData(id: string) {
+    return await prismaClient.userPendingData.delete({
+      where: {
+        id,
       },
     });
   }

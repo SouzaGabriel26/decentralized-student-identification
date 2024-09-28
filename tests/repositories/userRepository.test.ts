@@ -155,4 +155,61 @@ describe('> User Repository', () => {
       },
     ]);
   });
+
+  it('should delete a pending user data', async () => {
+    const userRepository = createUserRepository();
+    const createdUser = await userRepository.create({
+      name: 'pending user to delete',
+      email: 'pendingtodelete@mail.com',
+      passwordHash: randomUUID(),
+      publicKey: randomUUID(),
+      ethAddress: randomUUID(),
+    });
+
+    const input = {
+      name: createdUser.name,
+      email: createdUser.email,
+      cpf: '12345678901',
+      cep: '12345678',
+      address: 'Rua Teste',
+      number: '123',
+      complement: 'Casa',
+      course: 'Ciência da Computação',
+      photoUrl: 'http://test.com/photo.jpg',
+    };
+
+    const createdUserPendingData = await userRepository.createPendingData(
+      createdUser.id,
+      input,
+    );
+
+    await userRepository.deletePendingData(createdUserPendingData.id);
+
+    const pendingUser = await prismaClient.userPendingData.findUnique({
+      where: {
+        id: createdUserPendingData.id,
+      },
+    });
+
+    expect(pendingUser).toBeNull();
+  });
+
+  it('should update user status', async () => {
+    const userRepository = createUserRepository();
+    const createdUser = await userRepository.create({
+      name: 'user to update status',
+      email: 'emailtoupdatestatus@mail.com',
+      ethAddress: randomUUID(),
+      passwordHash: randomUUID(),
+      publicKey: randomUUID(),
+    });
+
+    const userBeforeUpdate = await userRepository.findById(createdUser.id);
+    expect(userBeforeUpdate?.status).toBe('PENDING');
+
+    await userRepository.updateStatus(createdUser.id, 'APPROVED');
+
+    const userAfterUpdate = await userRepository.findById(createdUser.id);
+    expect(userAfterUpdate?.status).toBe('APPROVED');
+  });
 });
