@@ -1,4 +1,5 @@
 import {
+  ChecklistIcon,
   HomeIcon,
   IdBadgeIcon,
   InfoIcon,
@@ -78,7 +79,7 @@ export const navItems: Array<NavItemProps> = [
   {
     title: 'Carteiras emitidas',
     href: '/issued-cards',
-    icon: <ListUnorderedIcon />,
+    icon: <ChecklistIcon />,
     auth: {
       isPrivate: true,
       onlyAdmin: true,
