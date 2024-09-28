@@ -14,7 +14,16 @@ export default async function Page() {
   const pendingCards = await userRepository.findPendingUsers();
 
   if (pendingCards.length === 0) {
-    return <Text>Nenhuma solicitação de emissão de carteira pendente</Text>;
+    return (
+      <Text
+        sx={{
+          fontSize: 20,
+          color: 'slategray',
+        }}
+      >
+        Nenhuma solicitação de emissão de carteira pendente
+      </Text>
+    );
   }
 
   return (
