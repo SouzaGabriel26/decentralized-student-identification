@@ -1,7 +1,7 @@
 'use server';
 
 import { createUserRepository } from '@/repositories/userRepository';
-import { cryptography } from '@/services/cryptography';
+import { cryptography, DecryptDataProps } from '@/services/cryptography';
 import { UserPendingData, UserStatus } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 
@@ -24,6 +24,16 @@ export async function encryptUserPendingDataAction(
   return {
     data: { encryptedData, userEthAddress: user.ethAddress },
     error: null,
+  };
+}
+
+export async function decryptUserDataAction(props: DecryptDataProps) {
+  const { decryptedData, error } =
+    cryptography.decryptData<UserPendingData>(props);
+
+  return {
+    data: decryptedData ?? null,
+    error: error ?? null,
   };
 }
 
