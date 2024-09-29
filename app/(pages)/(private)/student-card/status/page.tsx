@@ -8,7 +8,7 @@ export default async function Page() {
     return redirect('/', RedirectType.replace);
   }
 
-  let statusObject = {
+  const statusObject = {
     APPROVED: 'Aprovado',
     REJECTED: 'Rejeitado',
     PENDING: 'Pendente',
