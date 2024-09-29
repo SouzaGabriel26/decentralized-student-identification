@@ -72,7 +72,7 @@ describe('> models/cryptography', () => {
     });
 
     expect(result).toStrictEqual({
-      error: 'Senha inválida para chave privada.',
+      error: 'Credenciais inválidas.',
     });
   });
 

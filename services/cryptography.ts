@@ -47,13 +47,13 @@ function encryptData<Data>({ data, publicKey }: EncryptDataProps<Data>) {
   return { encryptedData: encryptedData.toString('base64') };
 }
 
-type DecryptDataProps = {
+export type DecryptDataProps = {
   encryptedData: string;
   privateKey: string;
   passphrase: string;
 };
 
-function decryptData({
+function decryptData<DecryptDataType = any>({
   encryptedData,
   privateKey,
   passphrase,
@@ -65,10 +65,16 @@ function decryptData({
       bufferData,
     );
 
-    return { decryptedData: JSON.parse(decryptedData.toString('utf8')) };
+    const parsedData = JSON.parse(
+      decryptedData.toString('utf8'),
+    ) as DecryptDataType;
+
+    return {
+      decryptedData: parsedData,
+    };
   } catch {
     return {
-      error: 'Senha inválida para chave privada.',
+      error: 'Credenciais inválidas.',
     };
   }
 }
