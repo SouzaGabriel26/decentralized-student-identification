@@ -5,6 +5,10 @@ export const constants = Object.freeze({
   jwt_secret: process.env.JWT_SECRET!,
   smart_contract_address: '0xb4d514ec4a871841da92dc710caeadc86f90669e',
   ganache_url: 'http://localhost:8545',
+  seed: {
+    admin_email: process.env.ADMIN_EMAIL!,
+    admin_raw_password: process.env.ADMIN_RAW_PASSWORD!,
+  },
 });
 
 getConstants();
@@ -18,6 +22,10 @@ function getConstants() {
 
   if (!constants.jwt_secret) {
     missingEnvs.push('JWT_SECRET');
+  }
+
+  if (Object.values(constants.seed).length === 0) {
+    missingEnvs.push('SEED: ADMIN_EMAIL, ADMIN_RAW_PASSWORD');
   }
 
   if (missingEnvs.length > 0) {
