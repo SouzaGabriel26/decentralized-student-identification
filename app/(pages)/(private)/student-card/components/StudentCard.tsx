@@ -62,7 +62,15 @@ export function StudentCard({ ethAddress }: StudentCardProps) {
   }
 
   return (
-    <Box>
+    <Box
+      sx={{
+        width: '500px',
+        overflowWrap: 'break-word',
+        '@media (max-width: 480px)': {
+          width: '300px',
+        },
+      }}
+    >
       <Text as="h2" fontSize={2} fontWeight="bold">
         Carteira
       </Text>
@@ -76,7 +84,6 @@ export function StudentCard({ ethAddress }: StudentCardProps) {
         >
           <Text
             sx={{
-              width: '500px',
               overflowWrap: 'break-word',
             }}
           >
