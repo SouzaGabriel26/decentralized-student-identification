@@ -1,7 +1,9 @@
+import Web3Provider from '@/app/contexts/Web3Context';
 import { identity } from '@/utils/idendity';
 import { Box, Text } from '@primer/react';
 import Link from 'next/link';
 import { redirect, RedirectType } from 'next/navigation';
+import { StudentCard } from './components/StudentCard';
 
 export default async function Page() {
   const signedUser = await identity.isLoggedIn();
@@ -24,5 +26,9 @@ export default async function Page() {
     );
   }
 
-  return <p>Carteira de estudante descriptografada</p>;
+  return (
+    <Web3Provider>
+      <StudentCard ethAddress={signedUser.ethAddress} />
+    </Web3Provider>
+  );
 }

@@ -1,5 +1,9 @@
 export const abi = [
-  { inputs: [], stateMutability: 'nonpayable', type: 'constructor' },
+  {
+    inputs: [],
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+  },
   {
     anonymous: false,
     inputs: [
@@ -53,8 +57,16 @@ export const abi = [
   },
   {
     inputs: [
-      { internalType: 'address', name: '_studentPublicKey', type: 'address' },
-      { internalType: 'uint256', name: '_newExpDate', type: 'uint256' },
+      {
+        internalType: 'address',
+        name: '_studentPublicKey',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: '_newExpDate',
+        type: 'uint256',
+      },
     ],
     name: 'extendCardExpiration',
     outputs: [],
@@ -63,20 +75,36 @@ export const abi = [
   },
   {
     inputs: [
-      { internalType: 'address', name: '_studentPublicKey', type: 'address' },
+      {
+        internalType: 'address',
+        name: '_studentPublicKey',
+        type: 'address',
+      },
     ],
     name: 'getCard',
     outputs: [
       {
         components: [
-          { internalType: 'string', name: 'hashCard', type: 'string' },
-          { internalType: 'uint256', name: 'expDate', type: 'uint256' },
+          {
+            internalType: 'string',
+            name: 'hashCard',
+            type: 'string',
+          },
+          {
+            internalType: 'uint256',
+            name: 'expDate',
+            type: 'uint256',
+          },
           {
             internalType: 'address',
             name: 'studentPublicKey',
             type: 'address',
           },
-          { internalType: 'bool', name: 'isValid', type: 'bool' },
+          {
+            internalType: 'bool',
+            name: 'isValid',
+            type: 'bool',
+          },
         ],
         internalType: 'struct StudentIdentification.StudentCard',
         name: '',
@@ -88,7 +116,30 @@ export const abi = [
   },
   {
     inputs: [
-      { internalType: 'address', name: '_studentPublicKey', type: 'address' },
+      {
+        internalType: 'address',
+        name: '_studentPublicKey',
+        type: 'address',
+      },
+    ],
+    name: 'hasCard',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_studentPublicKey',
+        type: 'address',
+      },
     ],
     name: 'invalidateCard',
     outputs: [],
@@ -97,9 +148,21 @@ export const abi = [
   },
   {
     inputs: [
-      { internalType: 'string', name: '_hashCard', type: 'string' },
-      { internalType: 'uint256', name: '_expDate', type: 'uint256' },
-      { internalType: 'address', name: '_studentPublicKey', type: 'address' },
+      {
+        internalType: 'string',
+        name: '_hashCard',
+        type: 'string',
+      },
+      {
+        internalType: 'uint256',
+        name: '_expDate',
+        type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: '_studentPublicKey',
+        type: 'address',
+      },
     ],
     name: 'issueCard',
     outputs: [],
@@ -109,7 +172,13 @@ export const abi = [
   {
     inputs: [],
     name: 'totalCardsIssued',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },

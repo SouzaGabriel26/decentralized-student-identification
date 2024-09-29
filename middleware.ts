@@ -1,6 +1,7 @@
 import { constants } from '@/utils/constants';
 import { navItems } from '@/utils/navItems';
 import { jwtVerify } from 'jose';
+import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function middleware(request: NextRequest) {
@@ -34,6 +35,9 @@ export async function middleware(request: NextRequest) {
         .map((item) => item.href as string);
 
       if (onlyNotSignedInPages.includes(pathname) && userId) {
+        if (process.env.NODE_ENV === 'development') {
+          cookies().delete(constants.access_token_key);
+        }
         return NextResponse.redirect(new URL('/', request.url));
       }
     } catch {

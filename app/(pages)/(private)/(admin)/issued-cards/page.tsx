@@ -18,13 +18,13 @@ type IssuedCardEvent = {
 
 export default function Page() {
   const [issuedCards, setIssuedCards] = useState<Array<IssuedCardEvent>>([]);
-  const { web3Provider, contract } = useWeb3Context();
+  const { contract } = useWeb3Context();
 
   useEffect(() => {
     getIssuedCards();
 
     async function getIssuedCards() {
-      if (!web3Provider || !contract) return;
+      if (!contract) return;
 
       const events = (await contract.getPastEvents('CardIssued', {
         fromBlock: 0,
@@ -43,7 +43,7 @@ export default function Page() {
         })),
       );
     }
-  }, [web3Provider, contract]);
+  }, [contract]);
 
   if (!issuedCards.length) {
     return (

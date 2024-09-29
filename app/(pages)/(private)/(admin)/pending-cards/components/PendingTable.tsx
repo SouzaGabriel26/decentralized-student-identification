@@ -5,7 +5,6 @@ import { KebabHorizontalIcon } from '@primer/octicons-react';
 import { ActionList, ActionMenu, Avatar, Box, Text } from '@primer/react';
 import { DataTable, Table } from '@primer/react/drafts';
 import { UserPendingData } from '@prisma/client';
-import { useRouter } from 'next/navigation';
 import {
   deleteUserPendingDataAction,
   encryptUserPendingDataAction,
@@ -130,7 +129,6 @@ type ActionsProps = {
 
 function Actions({ userPendingData }: ActionsProps) {
   const { web3Provider, account, contract } = useWeb3Context();
-  const router = useRouter();
 
   async function handleIssueCard(userPendingData: UserPendingData) {
     if (!web3Provider || !contract) return;
@@ -173,7 +171,7 @@ function Actions({ userPendingData }: ActionsProps) {
       await updateUserStatusAction(userPendingData.userId, 'APPROVED');
     } catch (error) {
       // TODO: handle error
-      console.log(error);
+      console.error(error);
     }
   }
 

@@ -64,7 +64,6 @@ export default function Web3Provider({
 
       try {
         const accounts = await web3.eth.getAccounts();
-        console.log(accounts);
 
         if (!accounts || accounts.length === 0) {
           await window.ethereum.request({ method: 'eth_requestAccounts' });
