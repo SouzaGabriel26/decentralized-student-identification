@@ -85,4 +85,13 @@ export const navItems: Array<NavItemProps> = [
       onlyAdmin: true,
     },
   },
+  {
+    title: 'Alterar cadastro',
+    href: '/update-profile',
+    icon: <PersonIcon />,
+    auth: {
+      isPrivate: true,
+      onlyStudent: true,
+    },
+  },
 ];
