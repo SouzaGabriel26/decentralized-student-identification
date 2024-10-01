@@ -1,13 +1,24 @@
 'use client';
 
+import { LoadingButton } from '@/app/components/LoadingButton';
 import { useWeb3Context } from '@/app/contexts/Web3Context';
 import { KebabHorizontalIcon } from '@primer/octicons-react';
-import { ActionList, ActionMenu, Avatar, Box, Text } from '@primer/react';
-import { DataTable, Table } from '@primer/react/drafts';
+import {
+  ActionList,
+  ActionMenu,
+  Avatar,
+  Box,
+  Dialog,
+  Text,
+  Textarea,
+} from '@primer/react';
+import { Banner, DataTable, Table } from '@primer/react/drafts';
 import { UserPendingData } from '@prisma/client';
+import { useState } from 'react';
 import {
   deleteUserPendingDataAction,
   encryptUserPendingDataAction,
+  updateUserRejectionReasonAction,
   updateUserStatusAction,
 } from '../action';
 
@@ -128,6 +139,10 @@ type ActionsProps = {
 };
 
 function Actions({ userPendingData }: ActionsProps) {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
   const { web3Provider, account, contract } = useWeb3Context();
 
   async function handleIssueCard(userPendingData: UserPendingData) {
@@ -147,7 +162,7 @@ function Actions({ userPendingData }: ActionsProps) {
     ).getTime();
 
     try {
-      const result = await contract.methods
+      await contract.methods
         .issueCard(
           data.encryptedData,
           expirationDateInTimestamp,
@@ -165,8 +180,6 @@ function Actions({ userPendingData }: ActionsProps) {
         studentPublicKey: data.userEthAddress,
       });
 
-      console.log({ result });
-
       await deleteUserPendingDataAction(userPendingData.id);
       await updateUserStatusAction(userPendingData.userId, 'APPROVED');
     } catch (error) {
@@ -175,37 +188,82 @@ function Actions({ userPendingData }: ActionsProps) {
     }
   }
 
+  async function handleRejectCard(userPendingData: UserPendingData) {
+    if (!rejectionReason) {
+      setErrorMessage('Por favor, informe o motivo da rejeição');
+      return;
+    }
+
+    await updateUserRejectionReasonAction(userPendingData.id, rejectionReason);
+    await updateUserStatusAction(userPendingData.userId, 'REJECTED');
+  }
+
   return (
-    <ActionMenu>
-      <ActionMenu.Button>
-        <KebabHorizontalIcon />
-      </ActionMenu.Button>
-      <ActionMenu.Overlay
-        width="small"
+    <>
+      <ActionMenu>
+        <ActionMenu.Button>
+          <KebabHorizontalIcon />
+        </ActionMenu.Button>
+        <ActionMenu.Overlay
+          width="small"
+          sx={{
+            width: 'fit-content',
+          }}
+        >
+          <ActionList>
+            <ActionList.Item
+              onClick={async () => {
+                await handleIssueCard(userPendingData);
+              }}
+            >
+              Aprovar
+            </ActionList.Item>
+
+            <ActionList.Item
+              onClick={() => {
+                setIsDialogOpen(true);
+              }}
+            >
+              Rejeitar
+            </ActionList.Item>
+          </ActionList>
+        </ActionMenu.Overlay>
+      </ActionMenu>
+
+      <Dialog
+        isOpen={isDialogOpen}
+        onDismiss={() => setIsDialogOpen(false)}
         sx={{
-          width: 'fit-content',
+          minHeight: '300px',
         }}
       >
-        <ActionList>
-          <ActionList.Item
-            onClick={async () => {
-              await handleIssueCard(userPendingData);
+        <Dialog.Header id="header">
+          Rejeitar solicitação de: {userPendingData.name}
+        </Dialog.Header>
+        <Box
+          sx={{
+            padding: 3,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+          }}
+        >
+          <label htmlFor="rejection_reason">Motivo da rejeição:</label>
+          <Textarea
+            id="rejection_reason"
+            sx={{ padding: '10px', borderRadius: '4px' }}
+            onChange={(e) => setRejectionReason(e.target.value)}
+          />
 
-              // TODO: delete from UserPendingData where id = row.id
-            }}
-          >
-            Aprovar
-          </ActionList.Item>
+          {errorMessage && <Banner variant="critical" title={errorMessage} />}
 
-          <ActionList.Item
-            onClick={() => {
-              console.log('REJEITAR:');
-            }}
+          <LoadingButton
+            onClick={async () => handleRejectCard(userPendingData)}
           >
-            Rejeitar
-          </ActionList.Item>
-        </ActionList>
-      </ActionMenu.Overlay>
-    </ActionMenu>
+            Rejeitar solicitação de {userPendingData.name}
+          </LoadingButton>
+        </Box>
+      </Dialog>
+    </>
   );
 }

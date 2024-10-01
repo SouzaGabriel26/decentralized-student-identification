@@ -50,3 +50,14 @@ export async function updateUserStatusAction(id: string, status: UserStatus) {
 
   return revalidatePath('/pending-cards');
 }
+
+export async function updateUserRejectionReasonAction(
+  id: string,
+  rejection_reason: string,
+) {
+  const userRepository = createUserRepository();
+  await userRepository.updatePendingData({
+    id,
+    rejection_reason,
+  });
+}
