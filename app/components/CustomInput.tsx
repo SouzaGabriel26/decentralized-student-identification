@@ -18,8 +18,6 @@ export function CustomInput({
 }: CustomInputProps) {
   const inputId = id || name;
 
-  console.log({ required });
-
   return (
     <FormControl
       id={inputId}

@@ -151,6 +151,7 @@ describe('> User Repository', () => {
         complement: 'Casa',
         course: 'Ciência da Computação',
         photoUrl: 'http://test.com/photo.jpg',
+        rejection_reason: null,
         createdAt: expect.any(Date),
       },
     ]);
