@@ -39,18 +39,19 @@ model User {
 }
 
 model UserPendingData {
-  id         String   @id @default(uuid())
-  userId     String   @unique @map("user_id")
-  name       String
-  email      String
-  cpf        String
-  cep        String
-  address    String
-  number     String
-  complement String?
-  course     String
-  photoUrl   String   @map("photo_url")
-  createdAt  DateTime @default(now()) @map("created_at")
+  id               String   @id @default(uuid())
+  userId           String   @unique @map("user_id")
+  name             String
+  email            String
+  cpf              String
+  cep              String
+  address          String
+  number           String
+  complement       String?
+  course           String
+  photoUrl         String   @map("photo_url")
+  rejection_reason String?  @map("rejection_reason")
+  createdAt        DateTime @default(now()) @map("created_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
