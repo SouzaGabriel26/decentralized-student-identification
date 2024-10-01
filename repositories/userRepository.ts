@@ -27,6 +27,18 @@ type CreatePendingDataInput = {
   photoUrl: string;
 };
 
+export type EditPendingDataInput = {
+  id: string;
+  cpf?: string;
+  cep?: string;
+  address?: string;
+  number?: string;
+  complement?: string;
+  course?: string;
+  photoUrl?: string;
+  rejection_reason?: string;
+};
+
 export type UserRepository = ReturnType<typeof createUserRepository>;
 
 export function createUserRepository() {
@@ -38,6 +50,8 @@ export function createUserRepository() {
     findPendingUsers,
     deletePendingData,
     updateStatus,
+    updatePendingData,
+    findPendingDataByUserId,
   });
   type WithPassword = {
     withPassword?: boolean;
@@ -148,10 +162,30 @@ export function createUserRepository() {
     });
   }
 
+  async function findPendingDataByUserId(id: string) {
+    return await prismaClient.userPendingData.findUnique({
+      where: {
+        userId: id,
+      },
+    });
+  }
+
   async function deletePendingData(id: string) {
     return await prismaClient.userPendingData.delete({
       where: {
         id,
+      },
+    });
+  }
+
+  async function updatePendingData(input: EditPendingDataInput) {
+    const { id, ...data } = input;
+    return await prismaClient.userPendingData.update({
+      where: {
+        id,
+      },
+      data: {
+        ...data,
       },
     });
   }
