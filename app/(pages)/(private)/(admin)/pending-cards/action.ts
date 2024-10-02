@@ -58,6 +58,8 @@ export async function updateUserRejectionReasonAction(
   const userRepository = createUserRepository();
   await userRepository.updatePendingData({
     id,
-    rejection_reason,
+    dataToUpdate: {
+      rejection_reason,
+    },
   });
 }
