@@ -213,4 +213,97 @@ describe('> User Repository', () => {
     const userAfterUpdate = await userRepository.findById(createdUser.id);
     expect(userAfterUpdate?.status).toBe('APPROVED');
   });
+
+  it('should retrieve user pending data by userId', async () => {
+    const userRepository = createUserRepository();
+    const createdUser = await userRepository.create({
+      name: 'user_to_retrieve_pending_data',
+      email: 'user_to_retrieve_pending_data@mail.com',
+      ethAddress: randomUUID(),
+      passwordHash: randomUUID(),
+      publicKey: randomUUID(),
+    });
+
+    const randomCpf = randomBytes(11).toString('base64url');
+    const randomCep = randomBytes(8).toString('base64url');
+
+    const createdPendingData = await userRepository.createPendingData(
+      createdUser.id,
+      {
+        name: createdUser.name,
+        email: createdUser.email,
+        cpf: randomCpf,
+        cep: randomCep,
+        address: 'Test',
+        course: 'Ciência da Computação',
+        number: '123',
+        photoUrl: 'http://test.com/photo.jpg',
+      },
+    );
+
+    const pendingDataByUserId = await userRepository.findPendingDataByUserId(
+      createdUser.id,
+    );
+
+    expect(pendingDataByUserId).toStrictEqual({
+      id: createdPendingData.id,
+      userId: createdPendingData.userId,
+      name: createdPendingData.name,
+      email: createdPendingData.email,
+      cpf: randomCpf,
+      cep: randomCep,
+      complement: null,
+      address: 'Test',
+      number: '123',
+      course: 'Ciência da Computação',
+      photoUrl: 'http://test.com/photo.jpg',
+      rejection_reason: null,
+      createdAt: expect.any(Date),
+    });
+  });
+
+  it('should update user pending data', async () => {
+    const userRepository = createUserRepository();
+    const createdUser = await userRepository.create({
+      name: 'user_to_update_pending_data',
+      email: 'user_to_update_pending_data@mail.com',
+      ethAddress: randomUUID(),
+      passwordHash: randomUUID(),
+      publicKey: randomUUID(),
+    });
+
+    const randomCpf = randomBytes(11).toString('base64url');
+    const randomCep = randomBytes(8).toString('base64url');
+
+    const createdPendingData = await userRepository.createPendingData(
+      createdUser.id,
+      {
+        name: createdUser.name,
+        email: createdUser.email,
+        cpf: randomCpf,
+        cep: randomCep,
+        address: 'Test',
+        course: 'Ciência da Computação',
+        number: '123',
+        photoUrl: 'http://test.com/photo.jpg',
+      },
+    );
+
+    const dataBeforeUpdate = await userRepository.findPendingDataByUserId(
+      createdPendingData.userId,
+    );
+    expect(dataBeforeUpdate?.address).toBe('Test');
+
+    await userRepository.updatePendingData({
+      id: createdPendingData.id,
+      dataToUpdate: {
+        address: 'Rua Teste',
+      },
+    });
+
+    const dataAfterUpdate = await userRepository.findPendingDataByUserId(
+      createdPendingData.userId,
+    );
+    expect(dataAfterUpdate?.address).toBe('Rua Teste');
+  });
 });
