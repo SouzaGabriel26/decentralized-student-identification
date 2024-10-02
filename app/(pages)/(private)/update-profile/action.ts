@@ -1,11 +1,8 @@
 'use server';
 
 import { createUserRepository } from '@/repositories/userRepository';
-import { lambda as lambdaService } from '@/services/lambda';
-import {
-  createEditPendingDataUseCase,
-  EditPendingDataUseCaseInput,
-} from '@/useCases/editPendingDataUseCase';
+import { lambda } from '@/services/lambda';
+import { createUpdatePendingDataUseCase } from '@/useCases/updatePendingDataUseCase';
 import { revalidatePath } from 'next/cache';
 
 export async function tryToUpdateUserPendingDataAction(
@@ -13,20 +10,48 @@ export async function tryToUpdateUserPendingDataAction(
   formData: FormData,
 ) {
   const userRepository = createUserRepository();
-  const { editPendingDataUseCase } = createEditPendingDataUseCase(
-    lambdaService,
-    userRepository,
-  );
+  const { updatePendingDataUseCase } =
+    createUpdatePendingDataUseCase(userRepository);
 
-  const data = Object.fromEntries(
-    formData.entries(),
-  ) as EditPendingDataUseCaseInput & {
+  type FormData = {
+    pendingDataId: string;
     userId: string;
+    cpf: string;
+    cep: string;
+    address: string;
+    number: string;
+    complement: string;
+    course: string;
+    photoUrl: string;
+    photo?: File;
   };
 
-  const response = await editPendingDataUseCase(data);
+  const { userId, pendingDataId, ...data } = Object.fromEntries(
+    formData.entries(),
+  ) as FormData;
+
+  const dataToUpdate = {
+    cpf: data.cpf,
+    cep: data.cep,
+    address: data.address,
+    number: data.number,
+    complement: data.complement,
+    course: data.course,
+    photoUrl: data.photoUrl,
+  };
+
+  if (data.photo && data.photo.size > 0) {
+    const { file_url } = await lambda.uploadFile(data.photo);
+    dataToUpdate.photoUrl = file_url;
+  }
+
+  const response = await updatePendingDataUseCase({
+    id: pendingDataId,
+    dataToUpdate,
+  });
+
   if (response.data) {
-    await userRepository.updateStatus(data.userId, 'PENDING');
+    await userRepository.updateStatus(userId, 'PENDING');
   }
 
   revalidatePath('/update-profile');

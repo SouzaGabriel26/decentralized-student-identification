@@ -1,27 +1,18 @@
 import {
-  EditPendingDataInput,
+  UpdatePendingDataInput,
   UserRepository,
 } from '@/repositories/userRepository';
-import { LambdaService } from '@/services/lambda';
 import { z } from 'zod';
 
-export type EditPendingDataUseCaseInput = Omit<
-  EditPendingDataInput,
-  'photoUrl'
-> & {
-  photo?: File;
-};
-
-export function createEditPendingDataUseCase(
-  lambdaService: LambdaService,
-  userRepository: UserRepository,
-) {
+export function createUpdatePendingDataUseCase(userRepository: UserRepository) {
   return Object.freeze({
-    editPendingDataUseCase,
+    updatePendingDataUseCase,
   });
 
-  async function editPendingDataUseCase(input: EditPendingDataUseCaseInput) {
-    const validationResult = schema.safeParse(input);
+  async function updatePendingDataUseCase(input: UpdatePendingDataInput) {
+    const validationResult = schema.safeParse({
+      ...input.dataToUpdate,
+    });
     if (validationResult.error) {
       return {
         errors: validationResult.error.issues,
@@ -29,22 +20,11 @@ export function createEditPendingDataUseCase(
       };
     }
 
-    const { photo, ...pendingData } = input;
-
-    let newFileUrl = '';
-    if (input.photo && input.photo.size > 0) {
-      const { file_url } = await lambdaService.uploadFile(input.photo);
-      newFileUrl = file_url;
-    }
-
-    const editedPendingData: EditPendingDataInput = {
-      ...pendingData,
-    };
-
-    if (newFileUrl) {
-      editedPendingData.photoUrl = newFileUrl;
-    }
-    await userRepository.updatePendingData(editedPendingData);
+    const { id: pendingDataId } = input;
+    await userRepository.updatePendingData({
+      id: pendingDataId,
+      dataToUpdate: validationResult.data,
+    });
 
     return {
       errors: null,
@@ -115,4 +95,8 @@ const schema = z.object({
         message: 'O campo curso deve ser uma das opções disponíveis',
       },
     ),
+  photoUrl: z.string({
+    invalid_type_error: 'O campo foto_url deve ser uma string',
+    required_error: 'O campo foto é obrigatório',
+  }),
 });

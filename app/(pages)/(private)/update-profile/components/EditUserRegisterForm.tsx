@@ -52,11 +52,20 @@ export function EditUserRegisterForm({
         email: {userPendingData?.email}
       </Text>
 
-      <input name="id" type="hidden" defaultValue={userPendingData!.id} />
+      <input
+        name="pendingDataId"
+        type="hidden"
+        defaultValue={userPendingData!.id}
+      />
       <input
         name="userId"
         type="hidden"
         defaultValue={userPendingData!.userId}
+      />
+      <input
+        name="photoUrl"
+        type="hidden"
+        defaultValue={userPendingData!.photoUrl}
       />
 
       <CustomInput

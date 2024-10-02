@@ -27,16 +27,18 @@ type CreatePendingDataInput = {
   photoUrl: string;
 };
 
-export type EditPendingDataInput = {
+export type UpdatePendingDataInput = {
   id: string;
-  cpf?: string;
-  cep?: string;
-  address?: string;
-  number?: string;
-  complement?: string;
-  course?: string;
-  photoUrl?: string;
-  rejection_reason?: string;
+  dataToUpdate?: {
+    cpf?: string;
+    cep?: string;
+    address?: string;
+    number?: string;
+    complement?: string;
+    course?: string;
+    photoUrl?: string;
+    rejection_reason?: string;
+  };
 };
 
 export type UserRepository = ReturnType<typeof createUserRepository>;
@@ -178,14 +180,19 @@ export function createUserRepository() {
     });
   }
 
-  async function updatePendingData(input: EditPendingDataInput) {
-    const { id, ...data } = input;
+  async function updatePendingData(input: UpdatePendingDataInput) {
+    const { id, dataToUpdate } = input;
+
+    if (!dataToUpdate || Object.keys(dataToUpdate).length === 0) {
+      return null;
+    }
+
     return await prismaClient.userPendingData.update({
       where: {
         id,
       },
       data: {
-        ...data,
+        ...dataToUpdate,
       },
     });
   }
