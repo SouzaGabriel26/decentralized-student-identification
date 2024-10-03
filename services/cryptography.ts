@@ -42,6 +42,13 @@ type EncryptDataProps<T> = {
 };
 
 function encryptData<Data>({ data, publicKey }: EncryptDataProps<Data>) {
+  const stringifiedData = JSON.stringify(data);
+  if (stringifiedData.length > 470) {
+    return {
+      error: 'O tamanho do objeto é muito grande para ser criptografado.',
+    };
+  }
+
   const bufferData = Buffer.from(JSON.stringify(data), 'utf8');
   const encryptedData = crypto.publicEncrypt(publicKey, bufferData);
   return { encryptedData: encryptedData.toString('base64') };

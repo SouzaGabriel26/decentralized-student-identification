@@ -16,10 +16,12 @@ export async function encryptUserPendingDataAction(
       error: 'Falha ao encontrar usuário',
     };
 
-  const { encryptedData } = cryptography.encryptData({
+  const { encryptedData, error } = cryptography.encryptData({
     data: userPendingData,
     publicKey: user.publicKey,
   });
+
+  if (error) return { data: null, error };
 
   return {
     data: { encryptedData, userEthAddress: user.ethAddress },
