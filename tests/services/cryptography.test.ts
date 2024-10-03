@@ -27,6 +27,22 @@ describe('> models/cryptography', () => {
     });
   });
 
+  test('Invoking encryptData with a object that has more than 470 characters', () => {
+    const { publicKey } = cryptography.generateKeyPairs({
+      passphrase: 'secret',
+    });
+
+    const description = 'a'.repeat(470);
+    const result = cryptography.encryptData({
+      data: description,
+      publicKey,
+    });
+
+    expect(result).toStrictEqual({
+      error: 'O tamanho do objeto é muito grande para ser criptografado.',
+    });
+  });
+
   test('Invoking "decryptData"', () => {
     const data = { name: 'Jane Doe', age: 25 };
     const passphrase = 'password123';
@@ -42,7 +58,7 @@ describe('> models/cryptography', () => {
     expect(typeof encryptedData).toBe('string');
 
     const result = cryptography.decryptData({
-      encryptedData,
+      encryptedData: encryptedData!,
       privateKey,
       passphrase,
     });
@@ -66,7 +82,7 @@ describe('> models/cryptography', () => {
     });
 
     const result = cryptography.decryptData({
-      encryptedData,
+      encryptedData: encryptedData!,
       privateKey,
       passphrase: 'wrong-password',
     });

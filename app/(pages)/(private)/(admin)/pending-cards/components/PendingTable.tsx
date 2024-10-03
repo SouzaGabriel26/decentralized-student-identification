@@ -151,8 +151,8 @@ function Actions({ userPendingData }: ActionsProps) {
     const { data, error } = await encryptUserPendingDataAction(userPendingData);
 
     if (!data) {
-      // TODO: handle error
-      console.log(error);
+      setErrorMessage(error);
+      setIsDialogOpen(true);
       return;
     }
 
