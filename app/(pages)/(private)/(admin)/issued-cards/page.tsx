@@ -2,7 +2,8 @@
 
 import { CopyToClipBoard } from '@/app/components/CopyToClipboard';
 import { useWeb3Context } from '@/app/contexts/Web3Context';
-import { Box, Label, Text } from '@primer/react';
+import { XCircleFillIcon } from '@primer/octicons-react';
+import { Box, Button, Label, Text } from '@primer/react';
 import { useEffect, useState } from 'react';
 import { EventLog } from 'web3';
 
@@ -80,11 +81,46 @@ type CardProps = {
 
 function Card({ card }: CardProps) {
   const [isCopied, setIsCopied] = useState(false);
+  const [isCardValid, setIsCardValid] = useState(true);
+
+  const { contract, account } = useWeb3Context();
 
   const formattedDate = new Date(card.cardIssued.expDate).toLocaleDateString();
 
+  async function handleInvalidateCard() {
+    if (!contract || !account) return;
+
+    await contract.methods
+      .invalidateCard(card.cardIssued.studentPublicKey)
+      .send({
+        from: account,
+      });
+
+    setIsCardValid(false);
+  }
+
+  useEffect(() => {
+    getCardStatus();
+
+    async function getCardStatus() {
+      if (!contract) return;
+
+      const studentCard = await contract.methods
+        .getCard(card.cardIssued.studentPublicKey)
+        .call();
+
+      if (new Date(Number(studentCard.expDate)) < new Date()) {
+        setIsCardValid(false);
+        return;
+      }
+
+      setIsCardValid(studentCard.isValid);
+    }
+  }, [contract, card]);
+
   return (
     <Box
+      title={isCardValid ? 'Carteira válida' : 'Carteira inválida ou expirada'}
       sx={{
         position: 'relative',
         display: 'flex',
@@ -95,6 +131,7 @@ function Card({ card }: CardProps) {
         border: '1px solid',
         borderRadius: 2,
         padding: 2,
+        borderColor: isCardValid ? 'green' : 'red',
         '@media (max-width: 620px)': {
           fontSize: 10,
         },
@@ -133,16 +170,30 @@ function Card({ card }: CardProps) {
         </Label>
       </span>
 
-      <CopyToClipBoard
+      <Box
         sx={{
           position: 'absolute',
           bottom: 2,
           right: 2,
         }}
-        contentToCopy={JSON.stringify(card)}
-        isCopied={isCopied}
-        setIsCopied={setIsCopied}
-      />
+      >
+        <CopyToClipBoard
+          contentToCopy={JSON.stringify(card)}
+          isCopied={isCopied}
+          setIsCopied={setIsCopied}
+        />
+
+        <Button
+          disabled={!isCardValid}
+          sx={{
+            marginTop: 2,
+          }}
+          title="Invalidar carteira"
+          onClick={handleInvalidateCard}
+        >
+          <XCircleFillIcon />
+        </Button>
+      </Box>
     </Box>
   );
 }
