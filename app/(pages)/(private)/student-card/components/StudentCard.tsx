@@ -142,7 +142,10 @@ export function StudentCard({ ethAddress }: StudentCardProps) {
           marginTop: 4,
         }}
       >
-        <Button onClick={() => setIsDialogOpen(true)}>
+        <Button
+          disabled={!ethStudentCard?.isValid}
+          onClick={() => setIsDialogOpen(true)}
+        >
           Descriptografar carteira
         </Button>
 
