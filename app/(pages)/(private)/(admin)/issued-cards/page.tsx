@@ -1,9 +1,10 @@
 'use client';
 
 import { CopyToClipBoard } from '@/app/components/CopyToClipboard';
+import { LoadingButton } from '@/app/components/LoadingButton';
 import { useWeb3Context } from '@/app/contexts/Web3Context';
 import { XCircleFillIcon } from '@primer/octicons-react';
-import { Box, Button, Label, Text } from '@primer/react';
+import { Box, Button, Dialog, Label, Text } from '@primer/react';
 import { useEffect, useState } from 'react';
 import { EventLog } from 'web3';
 
@@ -82,6 +83,8 @@ type CardProps = {
 function Card({ card }: CardProps) {
   const [isCopied, setIsCopied] = useState(false);
   const [isCardValid, setIsCardValid] = useState(true);
+  const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] =
+    useState(false);
 
   const { contract, account } = useWeb3Context();
 
@@ -97,6 +100,7 @@ function Card({ card }: CardProps) {
       });
 
     setIsCardValid(false);
+    setIsConfirmationDialogOpen(false);
   }
 
   useEffect(() => {
@@ -119,81 +123,114 @@ function Card({ card }: CardProps) {
   }, [contract, card]);
 
   return (
-    <Box
-      title={isCardValid ? 'Carteira válida' : 'Carteira inválida ou expirada'}
-      sx={{
-        position: 'relative',
-        display: 'flex',
-        flexDirection: 'column',
-        width: '500px',
-        gap: 2,
-        backgroundColor: 'canvas.inset',
-        border: '1px solid',
-        borderRadius: 2,
-        padding: 2,
-        borderColor: isCardValid ? 'green' : 'red',
-        '@media (max-width: 620px)': {
-          fontSize: 10,
-        },
-        overflowX: 'auto',
-      }}
-    >
-      <span>
-        <Text sx={{ display: 'block' }}>Block Hash:</Text>
-        <Label sx={{ backgroundColor: 'canvas.overlay', p: 2 }}>
-          {card.blockHash}
-        </Label>
-      </span>
-
-      <span>
-        <Text sx={{ display: 'block' }}>Transaction Hash:</Text>
-        <Label sx={{ backgroundColor: 'canvas.overlay', p: 2 }}>
-          {card.transactionHash}
-        </Label>
-      </span>
-
-      <span>
-        <Text sx={{ display: 'block' }}>Expiration Date:</Text>
-        <Text
-          sx={{
-            color: 'slategray',
-          }}
-        >
-          {formattedDate}
-        </Text>
-      </span>
-
-      <span>
-        <Text sx={{ display: 'block' }}>Student public key:</Text>
-        <Label sx={{ backgroundColor: 'canvas.overlay', p: 2 }}>
-          {card.cardIssued.studentPublicKey}
-        </Label>
-      </span>
-
+    <>
       <Box
+        title={
+          isCardValid ? 'Carteira válida' : 'Carteira inválida ou expirada'
+        }
         sx={{
-          position: 'absolute',
-          bottom: 2,
-          right: 2,
+          position: 'relative',
+          display: 'flex',
+          flexDirection: 'column',
+          width: '500px',
+          gap: 2,
+          backgroundColor: 'canvas.inset',
+          border: '1px solid',
+          borderRadius: 2,
+          padding: 2,
+          borderColor: isCardValid ? 'green' : 'red',
+          '@media (max-width: 620px)': {
+            fontSize: 10,
+          },
+          overflowX: 'auto',
         }}
       >
-        <CopyToClipBoard
-          contentToCopy={JSON.stringify(card)}
-          isCopied={isCopied}
-          setIsCopied={setIsCopied}
-        />
+        <span>
+          <Text sx={{ display: 'block' }}>Block Hash:</Text>
+          <Label sx={{ backgroundColor: 'canvas.overlay', p: 2 }}>
+            {card.blockHash}
+          </Label>
+        </span>
 
-        <Button
-          disabled={!isCardValid}
+        <span>
+          <Text sx={{ display: 'block' }}>Transaction Hash:</Text>
+          <Label sx={{ backgroundColor: 'canvas.overlay', p: 2 }}>
+            {card.transactionHash}
+          </Label>
+        </span>
+
+        <span>
+          <Text sx={{ display: 'block' }}>Expiration Date:</Text>
+          <Text
+            sx={{
+              color: 'slategray',
+            }}
+          >
+            {formattedDate}
+          </Text>
+        </span>
+
+        <span>
+          <Text sx={{ display: 'block' }}>Student public key:</Text>
+          <Label sx={{ backgroundColor: 'canvas.overlay', p: 2 }}>
+            {card.cardIssued.studentPublicKey}
+          </Label>
+        </span>
+
+        <Box
           sx={{
-            marginTop: 2,
+            position: 'absolute',
+            bottom: 2,
+            right: 2,
           }}
-          title="Invalidar carteira"
-          onClick={handleInvalidateCard}
         >
-          <XCircleFillIcon />
-        </Button>
+          <CopyToClipBoard
+            contentToCopy={JSON.stringify(card)}
+            isCopied={isCopied}
+            setIsCopied={setIsCopied}
+          />
+
+          <Button
+            disabled={!isCardValid}
+            sx={{
+              marginTop: 2,
+            }}
+            title="Invalidar carteira"
+            onClick={() => setIsConfirmationDialogOpen(true)}
+          >
+            <XCircleFillIcon />
+          </Button>
+        </Box>
       </Box>
-    </Box>
+
+      <Dialog
+        isOpen={isConfirmationDialogOpen}
+        onDismiss={() => setIsConfirmationDialogOpen(false)}
+        sx={{
+          '@media (max-width: 600px)': {
+            maxHeight: '200px',
+          },
+        }}
+      >
+        <Dialog.Header>Confirmação</Dialog.Header>
+
+        <Box
+          sx={{
+            padding: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Text sx={{ textAlign: 'center' }}>
+            Tem certeza que deseja invalidar a carteira?
+          </Text>
+
+          <LoadingButton onClick={handleInvalidateCard}>
+            Confirmar
+          </LoadingButton>
+        </Box>
+      </Dialog>
+    </>
   );
 }
