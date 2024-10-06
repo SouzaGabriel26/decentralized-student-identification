@@ -3,7 +3,7 @@
 import { CopyToClipBoard } from '@/app/components/CopyToClipboard';
 import { LoadingButton } from '@/app/components/LoadingButton';
 import { useWeb3Context } from '@/app/contexts/Web3Context';
-import { XCircleFillIcon } from '@primer/octicons-react';
+import { ClockFillIcon, XCircleFillIcon } from '@primer/octicons-react';
 import { Box, Button, Dialog, Label, Text } from '@primer/react';
 import { useEffect, useState } from 'react';
 import { EventLog } from 'web3';
@@ -83,8 +83,13 @@ type CardProps = {
 function Card({ card }: CardProps) {
   const [isCopied, setIsCopied] = useState(false);
   const [isCardValid, setIsCardValid] = useState(true);
-  const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] =
+  const [isInvalidateCardModalOpen, setIsInvalidateCardModalOpen] =
     useState(false);
+  const [isExtendCardExpTimeModalOpen, setIsExtendCardExpTimeModalOpen] =
+    useState(false);
+  const [newExpirationTime, setNewExpirationTime] = useState<string | null>(
+    null,
+  );
 
   const { contract, account } = useWeb3Context();
 
@@ -100,7 +105,35 @@ function Card({ card }: CardProps) {
       });
 
     setIsCardValid(false);
-    setIsConfirmationDialogOpen(false);
+    setIsInvalidateCardModalOpen(false);
+  }
+
+  async function handleExtendCardExpirationTime() {
+    if (!contract || !account) return;
+
+    const currentExpirationTime = new Date(card.cardIssued.expDate);
+
+    const newExpirationDate = new Date(
+      currentExpirationTime.setMonth(currentExpirationTime.getMonth() + 6),
+    );
+
+    try {
+      await contract.methods
+        .extendCardExpiration(
+          card.cardIssued.studentPublicKey,
+          newExpirationDate.getTime(),
+        )
+        .send({
+          from: account,
+          gas: '3000000',
+        });
+
+      setNewExpirationTime(newExpirationDate.toLocaleDateString());
+    } catch (error) {
+      console.error(error);
+    }
+
+    setIsExtendCardExpTimeModalOpen(false);
   }
 
   useEffect(() => {
@@ -116,6 +149,13 @@ function Card({ card }: CardProps) {
       if (new Date(Number(studentCard.expDate)) < new Date()) {
         setIsCardValid(false);
         return;
+      }
+
+      if (Number(studentCard.expDate) !== card.cardIssued.expDate) {
+        const newExpTimeInTimestamp = Number(studentCard.expDate);
+        setNewExpirationTime(
+          new Date(newExpTimeInTimestamp).toLocaleDateString(),
+        );
       }
 
       setIsCardValid(studentCard.isValid);
@@ -166,7 +206,7 @@ function Card({ card }: CardProps) {
               color: 'slategray',
             }}
           >
-            {formattedDate}
+            {newExpirationTime ? newExpirationTime : formattedDate}
           </Text>
         </span>
 
@@ -182,6 +222,9 @@ function Card({ card }: CardProps) {
             position: 'absolute',
             bottom: 2,
             right: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 1,
           }}
         >
           <CopyToClipBoard
@@ -192,20 +235,32 @@ function Card({ card }: CardProps) {
 
           <Button
             disabled={!isCardValid}
-            sx={{
-              marginTop: 2,
-            }}
             title="Invalidar carteira"
-            onClick={() => setIsConfirmationDialogOpen(true)}
+            onClick={() => setIsInvalidateCardModalOpen(true)}
           >
             <XCircleFillIcon />
+          </Button>
+
+          <Button
+            disabled={!isCardValid}
+            title="Estender tempo de expiração da carteira"
+            onClick={() => setIsExtendCardExpTimeModalOpen(true)}
+          >
+            <ClockFillIcon />
           </Button>
         </Box>
       </Box>
 
+      <InvalidateCard />
+      <ExtendCardExpirationTime />
+    </>
+  );
+
+  function InvalidateCard() {
+    return (
       <Dialog
-        isOpen={isConfirmationDialogOpen}
-        onDismiss={() => setIsConfirmationDialogOpen(false)}
+        isOpen={isInvalidateCardModalOpen}
+        onDismiss={() => setIsInvalidateCardModalOpen(false)}
         sx={{
           '@media (max-width: 600px)': {
             maxHeight: '200px',
@@ -231,6 +286,40 @@ function Card({ card }: CardProps) {
           </LoadingButton>
         </Box>
       </Dialog>
-    </>
-  );
+    );
+  }
+
+  function ExtendCardExpirationTime() {
+    return (
+      <Dialog
+        isOpen={isExtendCardExpTimeModalOpen}
+        onDismiss={() => setIsExtendCardExpTimeModalOpen(false)}
+        sx={{
+          '@media (max-width: 600px)': {
+            maxHeight: '200px',
+          },
+        }}
+      >
+        <Dialog.Header>Confirmação</Dialog.Header>
+
+        <Box
+          sx={{
+            padding: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Text sx={{ textAlign: 'center' }}>
+            Tem certeza que deseja aumentar o tempo de expiração da carteira em
+            6 mêses?
+          </Text>
+
+          <LoadingButton onClick={handleExtendCardExpirationTime}>
+            Confirmar
+          </LoadingButton>
+        </Box>
+      </Dialog>
+    );
+  }
 }
