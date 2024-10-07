@@ -10,7 +10,7 @@ import { UserPendingData } from '@prisma/client';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { ContractExecutionError } from 'web3';
-import { decryptUserDataAction } from '../../(admin)/pending-cards/action';
+import { decryptUserDataAction } from '../action';
 
 type StudentCardProps = {
   ethAddress: string;
@@ -259,6 +259,7 @@ function DecryptedStudentCard(studentCard: UserPendingData) {
         Curso:
         <Label variant="success">{studentCard.course}</Label>
       </Text>
+      <Text>Matricula: {studentCard.registration}</Text>
       <Text>
         Data matrícula: {new Date(studentCard.createdAt).toLocaleString()}
       </Text>

@@ -47,6 +47,7 @@ model UserPendingData {
   cep              String
   address          String
   number           String
+  registration     Int      @default(autoincrement())
   complement       String?
   course           String
   photoUrl         String   @map("photo_url")
