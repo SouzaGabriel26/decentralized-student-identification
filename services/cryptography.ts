@@ -50,7 +50,10 @@ function encryptData<Data>({ data, publicKey }: EncryptDataProps<Data>) {
   }
 
   const bufferData = Buffer.from(JSON.stringify(data), 'utf8');
-  const encryptedData = crypto.publicEncrypt(publicKey, bufferData);
+  const encryptedData = crypto.publicEncrypt(
+    publicKey,
+    new Uint8Array(bufferData),
+  );
   return { encryptedData: encryptedData.toString('base64') };
 }
 
@@ -69,7 +72,7 @@ function decryptData<DecryptDataType = any>({
     const bufferData = Buffer.from(encryptedData, 'base64');
     const decryptedData = crypto.privateDecrypt(
       { key: privateKey, passphrase },
-      bufferData,
+      new Uint8Array(bufferData),
     );
 
     const parsedData = JSON.parse(
