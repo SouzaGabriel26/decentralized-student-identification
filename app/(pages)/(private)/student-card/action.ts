@@ -9,11 +9,18 @@ export async function decryptUserDataAction(props: DecryptDataProps) {
   let originalUserPendingData = {} as UserPendingData;
 
   for (const hash of encryptedHashes) {
-    const { decryptedData } = cryptography.decryptData({
+    const { decryptedData, error } = cryptography.decryptData({
       encryptedData: hash,
       passphrase: props.passphrase,
       privateKey: props.privateKey,
     });
+
+    if (error) {
+      return {
+        data: null,
+        error,
+      };
+    }
 
     originalUserPendingData = { ...originalUserPendingData, ...decryptedData };
   }

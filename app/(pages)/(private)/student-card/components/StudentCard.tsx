@@ -4,11 +4,20 @@ import { CustomInput } from '@/app/components/CustomInput';
 import { LoadingButton } from '@/app/components/LoadingButton';
 import { useWeb3Context } from '@/app/contexts/Web3Context';
 import { CheckCircleFillIcon, XCircleFillIcon } from '@primer/octicons-react';
-import { Box, Button, Dialog, Label, Text, Textarea } from '@primer/react';
+import {
+  Box,
+  Button,
+  Dialog,
+  Label,
+  Text,
+  Textarea,
+  TextProps,
+} from '@primer/react';
 import { Banner } from '@primer/react/drafts';
+import { Divider } from '@primer/react/lib-esm/deprecated/ActionList/Divider';
 import { UserPendingData } from '@prisma/client';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { ContractExecutionError } from 'web3';
 import { decryptUserDataAction } from '../action';
 
@@ -72,8 +81,9 @@ export function StudentCard({ ethAddress }: StudentCardProps) {
   return (
     <Box
       sx={{
-        width: '500px',
+        width: '100%',
         overflowWrap: 'break-word',
+        paddingBottom: 4,
         '@media (max-width: 480px)': {
           width: '300px',
           fontSize: '12px',
@@ -204,17 +214,20 @@ function EncryptedStudentCard(ethStudentCard: Card) {
         gap: '8px',
       }}
     >
-      <Text
-        sx={{
-          overflowWrap: 'break-word',
-        }}
-      >
-        Hash: {ethStudentCard.hashCard}
-      </Text>
-      <Text>
-        Validade: {new Date(ethStudentCard.expDate).toLocaleDateString()}
-      </Text>
-      <Text>Chave pública: {ethStudentCard.studentPublicKey}</Text>
+      <CustomText
+        label="Chave pública: "
+        value={ethStudentCard.studentPublicKey}
+      />
+
+      <Divider />
+
+      <CustomText
+        label="Validate da carteira: "
+        value={new Date(ethStudentCard.expDate).toLocaleDateString()}
+      />
+
+      <Divider />
+
       <Box
         sx={{
           display: 'flex',
@@ -222,7 +235,7 @@ function EncryptedStudentCard(ethStudentCard: Card) {
           gap: 2,
         }}
       >
-        <Text>Status: </Text>
+        <Text sx={{ fontWeight: 600 }}>Status: </Text>
         <Label
           size="large"
           variant={ethStudentCard.isValid ? 'success' : 'danger'}
@@ -230,6 +243,17 @@ function EncryptedStudentCard(ethStudentCard: Card) {
           {ethStudentCard.isValid ? 'Válida' : 'Inválida'}
         </Label>
       </Box>
+
+      <Divider />
+
+      <CustomText
+        label="Dados da carteira criptografada: "
+        value={ethStudentCard.hashCard}
+        sx={{
+          overflowWrap: 'break-word',
+          maxWidth: '60%',
+        }}
+      />
     </Box>
   );
 }
@@ -237,38 +261,96 @@ function EncryptedStudentCard(ethStudentCard: Card) {
 function DecryptedStudentCard(studentCard: UserPendingData) {
   // TODO: improve styles
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '4px',
-      }}
-    >
-      <Text>Nome: {studentCard.name}</Text>
-      <Text>Curso: {studentCard.course}</Text>
-      <Text>CPF: {studentCard.cpf}</Text>
-      <Text>Email: {studentCard.email}</Text>
-      <Text>Endereço: {studentCard.address}</Text>
-      <Text>
-        CEP: {studentCard.cep}, Número: {studentCard.number}
-      </Text>
-      {studentCard.complement && (
-        <Text>Complemento: {studentCard.complement}</Text>
-      )}
-      <Text>
-        Curso:
-        <Label variant="success">{studentCard.course}</Label>
-      </Text>
-      <Text>Matricula: {studentCard.registration}</Text>
-      <Text>
-        Data matrícula: {new Date(studentCard.createdAt).toLocaleString()}
-      </Text>
-      <Image
-        src={studentCard.photoUrl}
-        alt="Foto do aluno"
-        width={200}
-        height={200}
-      />
+    <>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end',
+          paddingBottom: 4,
+          gap: 4,
+          '@media (max-width: 600px)': {
+            flexDirection: 'column',
+            alignItems: 'inherit',
+          },
+        }}
+      >
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <CustomText label="Nome: " value={studentCard.name} />
+          <CustomText label="Email: " value={studentCard.email} />
+          <CustomText label="CPF: " value={studentCard.cpf} />
+          <Label
+            size="large"
+            variant="accent"
+            sx={{
+              width: 'fit-content',
+            }}
+          >
+            {studentCard.course}
+          </Label>
+        </Box>
+
+        <Box
+          sx={{
+            position: 'relative',
+            height: '150px',
+            width: '150px',
+          }}
+        >
+          <Image
+            src={studentCard.photoUrl}
+            alt="Foto do aluno"
+            fill
+            sizes="100%"
+            style={{
+              objectFit: 'cover',
+            }}
+          />
+        </Box>
+      </Box>
+
+      <Divider />
+
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Text as="h3" sx={{ mt: 0 }}>
+          Metadados:
+        </Text>
+
+        <CustomText
+          label="Data de criação da carteira: "
+          value={new Date(studentCard.createdAt).toLocaleDateString()}
+        />
+        <CustomText label="Curso: " value={studentCard.course} />
+        <CustomText label="Matrícula: " value={studentCard.registration} />
+
+        <Divider />
+
+        <Text as="h3" sx={{ mt: 0 }}>
+          Endereço:
+        </Text>
+
+        <CustomText label="CEP: " value={studentCard.cep} />
+        <CustomText label="Endereço: " value={studentCard.address} />
+        <CustomText label="Número: " value={studentCard.number} />
+        <CustomText
+          label="Complemento: "
+          value={studentCard.complement ?? 'Não informado'}
+        />
+      </Box>
+    </>
+  );
+}
+
+type CustomTextProps = TextProps & {
+  label: string;
+  value: ReactNode;
+};
+
+function CustomText({ label, value, ...props }: CustomTextProps) {
+  return (
+    <Box>
+      <Text sx={{ fontWeight: 600 }}>{label}</Text>
+      <Text {...props}>{value}</Text>
     </Box>
   );
 }
