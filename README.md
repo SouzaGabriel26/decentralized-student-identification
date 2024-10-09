@@ -2,6 +2,8 @@
 
 Coming soon...
 
+[Flowchart on how the project is structured](https://app.eraser.io/workspace/xxmg2mphVZfFWwK0kStY?origin=share)
+
 ## How to run
 
 > ATTENTION: To run this project locally, you must have docker installed on your machine.
