@@ -6,7 +6,8 @@ import { NavListItem } from '../components/NavListItem';
 export async function Sidebar() {
   const userSignedIn = await identity.isLoggedIn();
   const isUserAdmin = userSignedIn && userSignedIn.role === 'ADMIN';
-  const isUserRejected = userSignedIn && userSignedIn.status === 'REJECTED';
+  const userCanUpdateProfile =
+    userSignedIn && ['FORGOT_PK', 'REJECTED'].includes(userSignedIn.status);
 
   return (
     <Box
@@ -34,7 +35,8 @@ export async function Sidebar() {
           if (userSignedIn && item.auth.onlyNotSignedIn) return null;
           if (!isUserAdmin && item.auth.onlyAdmin) return null;
           if (isUserAdmin && item.auth.onlyStudent) return null;
-          if (!isUserRejected && item.href === '/update-profile') return null;
+          if (!userCanUpdateProfile && item.href === '/update-profile')
+            return null;
 
           return <NavListItem key={item.href} item={item} />;
         })}
