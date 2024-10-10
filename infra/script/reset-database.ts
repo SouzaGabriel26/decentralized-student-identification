@@ -10,8 +10,9 @@ async function resetDatabase() {
     console.log('> Database reseted');
 
     await createAdminUser();
-  } catch {
+  } catch (err) {
     console.error('> Error on reset database');
+    console.log(err);
   }
 }
 
