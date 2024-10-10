@@ -20,6 +20,7 @@ import Image from 'next/image';
 import { ReactNode, useEffect, useState } from 'react';
 import { ContractExecutionError } from 'web3';
 import { decryptUserDataAction } from '../action';
+import { ForgotPrivateKeyForm } from './ForgotPrivateKeyForm';
 
 type StudentCardProps = {
   ethAddress: string;
@@ -72,7 +73,7 @@ export function StudentCard({ ethAddress }: StudentCardProps) {
         title={cardNotFoundError}
         variant="critical"
         description={
-          'Pode ser que sua solicitação ainda não foi aceita, tente novamente mais tarde.'
+          'Pode ser que sua solicitação ainda não foi aceita, tente novamente mais tarde ou entre em contato com a administração.'
         }
       />
     );
@@ -113,7 +114,21 @@ export function StudentCard({ ethAddress }: StudentCardProps) {
       {ethStudentCard && !decryptedStudentCard && (
         <>
           <EncryptedStudentCard {...ethStudentCard} />
-          <DecryptStudentCardForm />
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+              mt: 4,
+              '@media (max-width: 480px)': {
+                flexDirection: 'column',
+                alignItems: 'inherit',
+              },
+            }}
+          >
+            <DecryptStudentCardForm />
+            <ForgotPrivateKeyForm ethAddress={ethAddress} />
+          </Box>
         </>
       )}
 
@@ -147,11 +162,7 @@ export function StudentCard({ ethAddress }: StudentCardProps) {
     }
 
     return (
-      <Box
-        sx={{
-          marginTop: 4,
-        }}
-      >
+      <Box>
         <Button
           disabled={!ethStudentCard?.isValid}
           onClick={() => setIsDialogOpen(true)}
