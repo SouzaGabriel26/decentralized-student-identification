@@ -24,6 +24,7 @@ import { ForgotPrivateKeyForm } from './ForgotPrivateKeyForm';
 
 type StudentCardProps = {
   ethAddress: string;
+  userId: string;
 };
 
 type Card = {
@@ -33,7 +34,7 @@ type Card = {
   isValid: boolean;
 };
 
-export function StudentCard({ ethAddress }: StudentCardProps) {
+export function StudentCard({ ethAddress, userId }: StudentCardProps) {
   const [cardNotFoundError, setCardNotFoundError] = useState('');
   const [ethStudentCard, setEthStudentCard] = useState<Card | null>(null);
   const [decryptedStudentCard, setDecryptedStudentCard] =
@@ -127,7 +128,7 @@ export function StudentCard({ ethAddress }: StudentCardProps) {
             }}
           >
             <DecryptStudentCardForm />
-            <ForgotPrivateKeyForm ethAddress={ethAddress} />
+            <ForgotPrivateKeyForm ethAddress={ethAddress} userId={userId} />
           </Box>
         </>
       )}

@@ -28,7 +28,7 @@ export default async function Page() {
 
   return (
     <Web3Provider>
-      <StudentCard ethAddress={signedUser.ethAddress} />
+      <StudentCard ethAddress={signedUser.ethAddress} userId={signedUser.id} />
     </Web3Provider>
   );
 }

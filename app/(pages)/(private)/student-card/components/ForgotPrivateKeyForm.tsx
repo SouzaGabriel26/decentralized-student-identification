@@ -1,22 +1,35 @@
 'use client';
 
 import { LoadingButton } from '@/app/components/LoadingButton';
+import { useWeb3Context } from '@/app/contexts/Web3Context';
 import { Box, Button, Dialog, Label, Text } from '@primer/react';
 import { Divider } from '@primer/react/lib-esm/ActionList/Divider';
 import { useState } from 'react';
-import { useFormState } from 'react-dom';
-import { forgotPrivateKeyAction } from '../action';
+import { updateUserStatusAction } from '../action';
 
 type ForgotPrivateKeyFormProps = {
   ethAddress: string;
+  userId: string;
 };
 
 export function ForgotPrivateKeyForm({
   ethAddress,
+  userId,
 }: ForgotPrivateKeyFormProps) {
-  const [_, action] = useFormState(forgotPrivateKeyAction, null);
   const [isForgotPrivateKeyModalOpen, setIsForgotPrivateKeyModalOpen] =
     useState(false);
+
+  const { account, contract } = useWeb3Context();
+
+  async function handleForgotPrivateKey() {
+    if (!contract || !account) return;
+
+    await contract.methods.invalidateCard(ethAddress).send({ from: account });
+
+    updateUserStatusAction({ status: 'FORGOT_PK', userId });
+
+    setIsForgotPrivateKeyModalOpen(false);
+  }
 
   return (
     <Box>
@@ -103,7 +116,7 @@ export function ForgotPrivateKeyForm({
             <LoadingButton
               sx={{ mt: 0 }}
               variant="primary"
-              onClick={() => action(ethAddress)}
+              onClick={handleForgotPrivateKey}
             >
               Proseguir
             </LoadingButton>
