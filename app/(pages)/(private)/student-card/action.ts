@@ -1,7 +1,9 @@
 'use server';
 
+import { createUserRepository } from '@/repositories/userRepository';
 import { cryptography, DecryptDataProps } from '@/services/cryptography';
-import { UserPendingData } from '@prisma/client';
+import { UserPendingData, UserStatus } from '@prisma/client';
+import { redirect } from 'next/navigation';
 
 export async function decryptUserDataAction({
   encryptedData,
@@ -35,9 +37,12 @@ export async function decryptUserDataAction({
   };
 }
 
-export async function forgotPrivateKeyAction(
-  _state: unknown,
-  userEthAddress: string,
-) {
-  console.log({ userEthAddress });
+export async function updateUserStatusAction(payload: {
+  userId: string;
+  status: UserStatus;
+}) {
+  const userRepository = createUserRepository();
+
+  await userRepository.updateStatus(payload.userId, payload.status);
+  return redirect('/student-card/status');
 }

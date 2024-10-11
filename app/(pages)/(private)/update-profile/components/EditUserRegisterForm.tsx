@@ -4,18 +4,25 @@ import { CustomInput } from '@/app/components/CustomInput';
 import { CustomSelect } from '@/app/components/CustomSelect';
 import { LoadingButton } from '@/app/components/LoadingButton';
 import { Avatar, Text } from '@primer/react';
-import { UserPendingData } from '@prisma/client';
+import { UserPendingData, UserStatus } from '@prisma/client';
 import { useFormState } from 'react-dom';
-import { tryToUpdateUserPendingDataAction } from '../action';
+import { editUserRegisterFormAction } from '../action';
 
 type EditUserRegisterFormProps = {
   userPendingData: UserPendingData | null;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    status: UserStatus;
+  };
 };
 
 export function EditUserRegisterForm({
   userPendingData,
+  user,
 }: EditUserRegisterFormProps) {
-  const [state, action] = useFormState(tryToUpdateUserPendingDataAction, null);
+  const [state, action] = useFormState(editUserRegisterFormAction, null);
 
   function getErrorMessage(path: string) {
     return state?.errors?.find((error) => error.path.includes(path))?.message;
@@ -47,25 +54,25 @@ export function EditUserRegisterForm({
           mb: 2,
         }}
       >
-        Sobre o aluno: {userPendingData?.name}
+        Sobre o aluno: {userPendingData?.name ?? user.name}
         <br />
-        email: {userPendingData?.email}
+        email: {userPendingData?.email ?? user.email}
       </Text>
 
       <input
         name="pendingDataId"
         type="hidden"
-        defaultValue={userPendingData!.id}
+        defaultValue={userPendingData?.id}
       />
       <input
         name="userId"
         type="hidden"
-        defaultValue={userPendingData!.userId}
+        defaultValue={userPendingData?.userId ?? user.id}
       />
       <input
         name="photoUrl"
         type="hidden"
-        defaultValue={userPendingData!.photoUrl}
+        defaultValue={userPendingData?.photoUrl}
       />
 
       <CustomInput

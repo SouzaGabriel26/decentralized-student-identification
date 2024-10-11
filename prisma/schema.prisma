@@ -11,6 +11,7 @@ enum UserStatus {
   PENDING
   APPROVED
   REJECTED
+  FORGOT_PK
 
   @@map("user_status")
 }

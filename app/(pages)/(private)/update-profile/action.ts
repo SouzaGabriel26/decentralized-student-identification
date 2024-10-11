@@ -5,30 +5,42 @@ import { lambda } from '@/services/lambda';
 import { createUpdatePendingDataUseCase } from '@/useCases/updatePendingDataUseCase';
 import { revalidatePath } from 'next/cache';
 
-export async function tryToUpdateUserPendingDataAction(
+type EditUserRegisterFormProps = {
+  pendingDataId?: string;
+  userId: string;
+  cpf: string;
+  cep: string;
+  address: string;
+  number: string;
+  complement: string;
+  course: string;
+  photoUrl: string;
+  photo?: File;
+};
+
+export async function editUserRegisterFormAction(
   _state: unknown,
   formData: FormData,
+) {
+  const editRegisterInput = Object.fromEntries(
+    formData.entries(),
+  ) as EditUserRegisterFormProps;
+
+  if (editRegisterInput.pendingDataId) {
+    return await updateRejectedPendingDataAction(editRegisterInput);
+  }
+
+  return await forgotPrivateKeyAction(editRegisterInput);
+}
+
+async function updateRejectedPendingDataAction(
+  input: EditUserRegisterFormProps,
 ) {
   const userRepository = createUserRepository();
   const { updatePendingDataUseCase } =
     createUpdatePendingDataUseCase(userRepository);
 
-  type FormData = {
-    pendingDataId: string;
-    userId: string;
-    cpf: string;
-    cep: string;
-    address: string;
-    number: string;
-    complement: string;
-    course: string;
-    photoUrl: string;
-    photo?: File;
-  };
-
-  const { userId, pendingDataId, ...data } = Object.fromEntries(
-    formData.entries(),
-  ) as FormData;
+  const { userId, pendingDataId, ...data } = input;
 
   const dataToUpdate = {
     cpf: data.cpf,
@@ -46,7 +58,7 @@ export async function tryToUpdateUserPendingDataAction(
   }
 
   const response = await updatePendingDataUseCase({
-    id: pendingDataId,
+    id: pendingDataId!,
     dataToUpdate,
   });
 
@@ -57,4 +69,15 @@ export async function tryToUpdateUserPendingDataAction(
   revalidatePath('/update-profile');
 
   return response;
+}
+
+async function forgotPrivateKeyAction(input: EditUserRegisterFormProps) {
+  console.log(input);
+
+  return {
+    errors: null,
+    data: {
+      message: 'Alguma coisa',
+    },
+  };
 }

@@ -1,15 +1,18 @@
 import { createUserRepository } from '@/repositories/userRepository';
 import { identity } from '@/utils/idendity';
 import { Box } from '@primer/react';
+import { UserStatus } from '@prisma/client';
 import { redirect, RedirectType } from 'next/navigation';
 import { EditUserRegisterForm } from './components/EditUserRegisterForm';
 
 export default async function Page() {
   const signedUser = await identity.isLoggedIn();
+  const acceptedUserStatus: UserStatus[] = ['FORGOT_PK', 'REJECTED'];
+
   if (
     !signedUser ||
-    signedUser.status !== 'REJECTED' ||
-    signedUser.role == 'ADMIN'
+    !acceptedUserStatus.includes(signedUser.status) ||
+    signedUser.role === 'ADMIN'
   ) {
     return redirect('/', RedirectType.replace);
   }
@@ -30,7 +33,15 @@ export default async function Page() {
         overflowY: 'auto',
       }}
     >
-      <EditUserRegisterForm userPendingData={userPendingData} />
+      <EditUserRegisterForm
+        userPendingData={userPendingData}
+        user={{
+          id: signedUser.id,
+          name: signedUser.name,
+          email: signedUser.email,
+          status: signedUser.status,
+        }}
+      />
     </Box>
   );
 }
