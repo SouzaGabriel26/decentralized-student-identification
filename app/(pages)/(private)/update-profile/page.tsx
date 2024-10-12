@@ -39,7 +39,7 @@ export default async function Page() {
           id: signedUser.id,
           name: signedUser.name,
           email: signedUser.email,
-          status: signedUser.status,
+          status: signedUser.status as 'FORGOT_PK' | 'REJECTED',
         }}
       />
     </Box>

@@ -1,12 +1,17 @@
 'use server';
 
 import { createUserRepository } from '@/repositories/userRepository';
+import { cryptography } from '@/services/cryptography';
 import { lambda } from '@/services/lambda';
+import { forgotPrivateKeyUseCase } from '@/useCases/forgotPrivateKeyUseCase';
 import { createUpdatePendingDataUseCase } from '@/useCases/updatePendingDataUseCase';
 import { revalidatePath } from 'next/cache';
+import { ZodIssue } from 'zod';
 
 type EditUserRegisterFormProps = {
   pendingDataId?: string;
+  password?: string;
+  userStatus: 'REJECTED' | 'FORGOT_PK';
   userId: string;
   cpf: string;
   cep: string;
@@ -16,17 +21,27 @@ type EditUserRegisterFormProps = {
   course: string;
   photoUrl: string;
   photo?: File;
+  name: string;
+  email: string;
+};
+
+type ActionResponse = {
+  data: {
+    message: string;
+    privateKey?: string;
+  } | null;
+  errors: ZodIssue[] | null;
 };
 
 export async function editUserRegisterFormAction(
   _state: unknown,
   formData: FormData,
-) {
+): Promise<ActionResponse> {
   const editRegisterInput = Object.fromEntries(
     formData.entries(),
   ) as EditUserRegisterFormProps;
 
-  if (editRegisterInput.pendingDataId) {
+  if (editRegisterInput.userStatus === 'REJECTED') {
     return await updateRejectedPendingDataAction(editRegisterInput);
   }
 
@@ -72,12 +87,28 @@ async function updateRejectedPendingDataAction(
 }
 
 async function forgotPrivateKeyAction(input: EditUserRegisterFormProps) {
-  console.log(input);
+  const userRepository = createUserRepository();
 
-  return {
-    errors: null,
-    data: {
-      message: 'Alguma coisa',
+  const result = await forgotPrivateKeyUseCase(
+    userRepository,
+    lambda,
+    cryptography,
+    {
+      userId: input.userId,
+      password: input.password!,
+      newData: {
+        address: input.address,
+        cep: input.cep,
+        complement: input.complement,
+        cpf: input.cpf,
+        course: input.course,
+        number: input.number,
+        photo: input.photo!,
+        email: input.email,
+        name: input.name,
+      },
     },
-  };
+  );
+
+  return result;
 }
