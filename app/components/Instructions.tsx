@@ -10,9 +10,10 @@ type InstructionsProps = {
     message: string;
     privateKey: string;
   };
+  type: 'register' | 'forgotPrivateKey';
 };
 
-export function Instructions({ data }: InstructionsProps) {
+export function Instructions({ data, type }: InstructionsProps) {
   const [isCopied, setIsCopied] = useState(false);
   const route = useRouter();
 
@@ -41,21 +42,39 @@ export function Instructions({ data }: InstructionsProps) {
         Copiar chave privada
       </CopyToClipBoard>
 
-      <Button
-        onClick={() => {
-          route.replace('/login');
-          route.refresh();
-        }}
-        disabled={!isCopied}
-        variant="primary"
-        sx={{
-          mt: 4,
-          display: 'flex',
-          width: '100%',
-        }}
-      >
-        Logar na conta
-      </Button>
+      {type === 'register' ? (
+        <Button
+          onClick={() => {
+            route.replace('/login');
+            route.refresh();
+          }}
+          disabled={!isCopied}
+          variant="primary"
+          sx={{
+            mt: 4,
+            display: 'flex',
+            width: '100%',
+          }}
+        >
+          Logar na conta
+        </Button>
+      ) : (
+        <Button
+          onClick={() => {
+            route.replace('/student-card/status');
+            route.refresh();
+          }}
+          disabled={!isCopied}
+          variant="primary"
+          sx={{
+            mt: 4,
+            display: 'flex',
+            width: '100%',
+          }}
+        >
+          Ver status da solicitação
+        </Button>
+      )}
     </Flash>
   );
 }

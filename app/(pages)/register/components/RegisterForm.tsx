@@ -6,7 +6,7 @@ import { CustomSelect } from '@/app/components/CustomSelect';
 import { LoadingButton } from '@/app/components/LoadingButton';
 import { Box, Text } from '@primer/react';
 import { useFormState } from 'react-dom';
-import { Instructions } from './Instructions';
+import { Instructions } from '../../../components/Instructions';
 
 export function RegisterForm() {
   const [state, action] = useFormState(tryToRegisterUserAction, null);
@@ -16,7 +16,7 @@ export function RegisterForm() {
   }
 
   if (state?.data) {
-    return <Instructions data={state.data} />;
+    return <Instructions data={state.data} type="register" />;
   }
 
   return (

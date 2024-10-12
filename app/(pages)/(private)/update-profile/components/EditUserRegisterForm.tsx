@@ -2,9 +2,10 @@
 
 import { CustomInput } from '@/app/components/CustomInput';
 import { CustomSelect } from '@/app/components/CustomSelect';
+import { Instructions } from '@/app/components/Instructions';
 import { LoadingButton } from '@/app/components/LoadingButton';
 import { Avatar, Text } from '@primer/react';
-import { UserPendingData, UserStatus } from '@prisma/client';
+import { UserPendingData } from '@prisma/client';
 import { useFormState } from 'react-dom';
 import { editUserRegisterFormAction } from '../action';
 
@@ -14,7 +15,7 @@ type EditUserRegisterFormProps = {
     id: string;
     name: string;
     email: string;
-    status: UserStatus;
+    status: 'FORGOT_PK' | 'REJECTED';
   };
 };
 
@@ -28,132 +29,167 @@ export function EditUserRegisterForm({
     return state?.errors?.find((error) => error.path.includes(path))?.message;
   }
 
-  return (
-    <form
-      action={action}
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 2,
-        maxWidth: 400,
-        width: '100%',
-      }}
-    >
-      {userPendingData?.photoUrl && (
-        <Avatar
-          sx={{
-            width: 50,
-            height: 50,
-          }}
-          src={userPendingData.photoUrl}
-          alt="Foto do aluno"
-        />
-      )}
-      <Text
-        sx={{
-          mb: 2,
+  if (state?.data?.privateKey) {
+    return (
+      <Instructions
+        data={{
+          message: state.data.message,
+          privateKey: state.data.privateKey,
         }}
-      >
-        Sobre o aluno: {userPendingData?.name ?? user.name}
-        <br />
-        email: {userPendingData?.email ?? user.email}
+        type="forgotPrivateKey"
+      />
+    );
+  }
+
+  return (
+    <>
+      <Text as="h2">
+        {user.status === 'FORGOT_PK'
+          ? 'Preencha o formulário para realizar o processo de criação de uma nova carteira'
+          : 'Preencha o formulário para atualizar seus dados e solicitar a matrícula novamente'}
       </Text>
 
-      <input
-        name="pendingDataId"
-        type="hidden"
-        defaultValue={userPendingData?.id}
-      />
-      <input
-        name="userId"
-        type="hidden"
-        defaultValue={userPendingData?.userId ?? user.id}
-      />
-      <input
-        name="photoUrl"
-        type="hidden"
-        defaultValue={userPendingData?.photoUrl}
-      />
-
-      <CustomInput
-        label="CPF"
-        name="cpf"
-        type="number"
-        required
-        defaultValue={userPendingData?.cpf}
-        error={getErrorMessage('cpf')}
-      />
-      <CustomInput
-        label="Cep"
-        name="cep"
-        type="number"
-        required
-        defaultValue={userPendingData?.cep}
-        error={getErrorMessage('cep')}
-      />
-      <CustomInput
-        label="Endereço"
-        name="address"
-        required
-        defaultValue={userPendingData?.address}
-        error={getErrorMessage('address')}
-      />
-      <CustomInput
-        label="Número"
-        name="number"
-        type="number"
-        required
-        defaultValue={userPendingData?.number}
-        error={getErrorMessage('number')}
-      />
-      <CustomInput
-        label="Complemento"
-        name="complement"
-        defaultValue={userPendingData?.complement ?? ''}
-        error={getErrorMessage('complement')}
-      />
-
-      <label
-        htmlFor="course"
-        style={{ fontWeight: 'bold', cursor: 'pointer', fontSize: 14 }}
+      <form
+        action={action}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+          maxWidth: 400,
+          width: '100%',
+        }}
       >
-        Curso desejado
-      </label>
-      <CustomSelect
-        id="course"
-        name="course"
-        required
-        defaultValue={userPendingData?.course}
-        options={[
-          { value: '', label: '' },
-          { value: 'ciencia-da-computacao', label: 'Ciência da Computação' },
-          {
-            value: 'engenharia-de-software',
-            label: 'Engenharia de Software',
-          },
-          {
-            value: 'sistemas-de-informacao',
-            label: 'Sistemas de Informação',
-          },
-        ]}
-      />
+        {userPendingData?.photoUrl && (
+          <Avatar
+            sx={{
+              width: 50,
+              height: 50,
+            }}
+            src={userPendingData.photoUrl}
+            alt="Foto do aluno"
+          />
+        )}
+        <Text
+          sx={{
+            mb: 2,
+          }}
+        >
+          Sobre o aluno: {userPendingData?.name ?? user.name}
+          <br />
+          email: {userPendingData?.email ?? user.email}
+        </Text>
 
-      <label
-        htmlFor="photo"
-        style={{ fontWeight: 'bold', cursor: 'pointer', fontSize: 14 }}
-      >
-        Foto do aluno
-      </label>
-      <input
-        type="file"
-        name="photo"
-        id="photo"
-        accept="image/png, image/jpg, image/jpeg"
-      />
+        <input name="name" type="hidden" defaultValue={user.name} />
+        <input name="email" type="hidden" defaultValue={user.email} />
 
-      <LoadingButton>
-        Atualizar dados e solicitar matrícula novamente
-      </LoadingButton>
-    </form>
+        <input
+          name="pendingDataId"
+          type="hidden"
+          defaultValue={userPendingData?.id}
+        />
+
+        <input
+          name="userId"
+          type="hidden"
+          defaultValue={userPendingData?.userId ?? user.id}
+        />
+        <input
+          name="photoUrl"
+          type="hidden"
+          defaultValue={userPendingData?.photoUrl}
+        />
+
+        {user.status == 'FORGOT_PK' && (
+          <CustomInput
+            label="Senha"
+            name="password"
+            type="password"
+            required
+            error={getErrorMessage('password')}
+          />
+        )}
+
+        <CustomInput
+          label="CPF"
+          name="cpf"
+          type="number"
+          required
+          defaultValue={userPendingData?.cpf}
+          error={getErrorMessage('cpf')}
+        />
+        <CustomInput
+          label="Cep"
+          name="cep"
+          type="number"
+          required
+          defaultValue={userPendingData?.cep}
+          error={getErrorMessage('cep')}
+        />
+        <CustomInput
+          label="Endereço"
+          name="address"
+          required
+          defaultValue={userPendingData?.address}
+          error={getErrorMessage('address')}
+        />
+        <CustomInput
+          label="Número"
+          name="number"
+          type="number"
+          required
+          defaultValue={userPendingData?.number}
+          error={getErrorMessage('number')}
+        />
+        <CustomInput
+          label="Complemento"
+          name="complement"
+          defaultValue={userPendingData?.complement ?? ''}
+          error={getErrorMessage('complement')}
+        />
+
+        <label
+          htmlFor="course"
+          style={{ fontWeight: 'bold', cursor: 'pointer', fontSize: 14 }}
+        >
+          Curso desejado
+        </label>
+        <CustomSelect
+          id="course"
+          name="course"
+          required
+          defaultValue={userPendingData?.course}
+          options={[
+            { value: '', label: '' },
+            { value: 'ciencia-da-computacao', label: 'Ciência da Computação' },
+            {
+              value: 'engenharia-de-software',
+              label: 'Engenharia de Software',
+            },
+            {
+              value: 'sistemas-de-informacao',
+              label: 'Sistemas de Informação',
+            },
+          ]}
+        />
+
+        <label
+          htmlFor="photo"
+          style={{ fontWeight: 'bold', cursor: 'pointer', fontSize: 14 }}
+        >
+          Foto do aluno
+        </label>
+        <input
+          required={user.status === 'FORGOT_PK'}
+          type="file"
+          name="photo"
+          id="photo"
+          accept="image/png, image/jpg, image/jpeg"
+        />
+
+        <LoadingButton>
+          Atualizar dados e solicitar matrícula novamente
+        </LoadingButton>
+      </form>
+    </>
   );
 }

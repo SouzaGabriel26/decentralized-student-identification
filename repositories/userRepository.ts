@@ -1,5 +1,5 @@
 import prismaClient from '@/lib/prismaClient';
-import { User, UserStatus } from '@prisma/client';
+import { UserStatus } from '@prisma/client';
 
 type CreateUserInput = {
   name: string;
@@ -15,7 +15,7 @@ type CreateUserOutput = {
   email: string;
 };
 
-type CreatePendingDataInput = {
+export type CreatePendingDataInput = {
   name: string;
   email: string;
   cpf: string;
@@ -41,6 +41,12 @@ export type UpdatePendingDataInput = {
   };
 };
 
+type UpdatePublicKeysInput = {
+  userId: string;
+  publicKey: string;
+  ethAddress: string;
+};
+
 export type UserRepository = ReturnType<typeof createUserRepository>;
 
 export function createUserRepository() {
@@ -52,6 +58,7 @@ export function createUserRepository() {
     findPendingUsers,
     deletePendingData,
     updateStatus,
+    updatePublicKeys,
     updatePendingData,
     findPendingDataByUserId,
   });
@@ -59,7 +66,10 @@ export function createUserRepository() {
     withPassword?: boolean;
   };
 
-  async function findById(id: string): Promise<Omit<User, 'password'> | null> {
+  async function findById(
+    id: string,
+    { withPassword = false }: WithPassword = {},
+  ) {
     return await prismaClient.user.findUnique({
       where: {
         id,
@@ -73,6 +83,7 @@ export function createUserRepository() {
         status: true,
         createdAt: true,
         role: true,
+        password: withPassword,
       },
     });
   }
@@ -121,6 +132,22 @@ export function createUserRepository() {
       },
       data: {
         status,
+      },
+    });
+  }
+
+  async function updatePublicKeys({
+    userId,
+    ethAddress,
+    publicKey,
+  }: UpdatePublicKeysInput) {
+    await prismaClient.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        ethAddress,
+        publicKey,
       },
     });
   }
