@@ -8,7 +8,7 @@ beforeAll(async () => {
 });
 
 describe('> Update Pending Data Use Case', () => {
-  it('should return a error when send at lead one invalid input field', async () => {
+  it('should return a error when send at least one invalid input field', async () => {
     const userRepository = createUserRepository();
     const { updatePendingDataUseCase } =
       createUpdatePendingDataUseCase(userRepository);
