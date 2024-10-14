@@ -4,7 +4,7 @@ import { CustomInput } from '@/app/components/CustomInput';
 import { CustomSelect } from '@/app/components/CustomSelect';
 import { Instructions } from '@/app/components/Instructions';
 import { LoadingButton } from '@/app/components/LoadingButton';
-import { Avatar, Text } from '@primer/react';
+import { Avatar, Box, Label, Text } from '@primer/react';
 import { UserPendingData } from '@prisma/client';
 import { useFormState } from 'react-dom';
 import { editUserRegisterFormAction } from '../action';
@@ -59,28 +59,43 @@ export function EditUserRegisterForm({
           width: '100%',
         }}
       >
-        {userPendingData?.photoUrl && (
-          <Avatar
-            sx={{
-              width: 50,
-              height: 50,
-            }}
-            src={userPendingData.photoUrl}
-            alt="Foto do aluno"
-          />
-        )}
-        <Text
+        <Box
           sx={{
-            mb: 2,
+            display: 'flex',
+            justifyContent: 'space-between',
           }}
         >
-          Sobre o aluno: {userPendingData?.name ?? user.name}
-          <br />
-          email: {userPendingData?.email ?? user.email}
-        </Text>
+          <Box sx={{ mb: 2 }}>
+            <Text
+              sx={{
+                display: 'block',
+              }}
+            >
+              Sobre o aluno: {userPendingData?.name ?? user.name}
+              <br />
+              email: {userPendingData?.email ?? user.email}
+            </Text>
+
+            <Label
+              size="large"
+              variant={user.status === 'FORGOT_PK' ? 'attention' : 'danger'}
+            >
+              {user.status}
+            </Label>
+          </Box>
+
+          {userPendingData?.photoUrl && (
+            <Avatar
+              src={userPendingData.photoUrl}
+              alt="Foto do aluno"
+              sx={{ width: 70, height: 70, objectFit: 'cover' }}
+            />
+          )}
+        </Box>
 
         <input name="name" type="hidden" defaultValue={user.name} />
         <input name="email" type="hidden" defaultValue={user.email} />
+        <input name="userStatus" type="hidden" defaultValue={user.status} />
 
         <input
           name="pendingDataId"
