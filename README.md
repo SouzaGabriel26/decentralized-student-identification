@@ -4,6 +4,15 @@ This project implements a decentralized system for managing student identificati
 
 The student's card details are encrypted using the student's public key. This ensures that only the holder of the corresponding private key can decrypt and access the details, safeguarding the confidentiality of the information.
 
+## Content shortcuts
+
+- [Stack](#stack)
+- [References](#references)
+- [Features](#features)
+- [Demonstrations](#demonstrations)
+- [How to run](#how-to-run)
+- [Author](#author)
+
 ## References
 
 - [Ethereum development documentation](https://ethereum.org/en/developers/docs/)
