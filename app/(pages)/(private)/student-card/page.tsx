@@ -28,6 +28,20 @@ export default async function Page() {
 
   return (
     <Web3Provider>
+      <Link
+        target={process.env.NODE_ENV === 'production' ? '_blank' : '_self'}
+        style={{
+          color: 'inherit',
+          textDecoration: 'none',
+        }}
+        href={
+          process.env.NODE_ENV === 'production'
+            ? `https://sepolia.etherscan.io/tx/${signedUser.transactionHash}`
+            : '#'
+        }
+      >
+        Ver transação na blockchain
+      </Link>
       <StudentCard ethAddress={signedUser.ethAddress} userId={signedUser.id} />
     </Web3Provider>
   );

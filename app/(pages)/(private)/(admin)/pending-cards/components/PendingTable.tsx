@@ -18,8 +18,8 @@ import { useState } from 'react';
 import {
   deleteUserPendingDataAction,
   encryptUserPendingDataAction,
+  updateUserAction,
   updateUserRejectionReasonAction,
-  updateUserStatusAction,
 } from '../action';
 
 type PendingTableProps = {
@@ -172,6 +172,12 @@ function Actions({ userPendingData }: ActionsProps) {
           from: account ?? undefined,
           gas: '3000000',
           gasPrice: web3Provider.utils.toWei('10', 'gwei'),
+        })
+        .on('transactionHash', async (hash) => {
+          await updateUserAction(userPendingData.userId, {
+            status: 'APPROVED',
+            transactionHash: hash,
+          });
         });
 
       console.log({
@@ -181,7 +187,6 @@ function Actions({ userPendingData }: ActionsProps) {
       });
 
       await deleteUserPendingDataAction(userPendingData.id);
-      await updateUserStatusAction(userPendingData.userId, 'APPROVED');
     } catch (error) {
       // TODO: handle error
       console.error(error);
@@ -195,7 +200,10 @@ function Actions({ userPendingData }: ActionsProps) {
     }
 
     await updateUserRejectionReasonAction(userPendingData.id, rejectionReason);
-    await updateUserStatusAction(userPendingData.userId, 'REJECTED');
+    await updateUserAction(userPendingData.userId, {
+      status: 'REJECTED',
+      transactionHash: '',
+    });
   }
 
   return (
