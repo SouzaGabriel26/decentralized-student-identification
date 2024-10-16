@@ -5,8 +5,10 @@ import { LoadingButton } from '@/app/components/LoadingButton';
 import { useWeb3Context } from '@/app/contexts/Web3Context';
 import { ClockFillIcon, XCircleFillIcon } from '@primer/octicons-react';
 import { Box, Button, Dialog, Label, Text } from '@primer/react';
+import { Banner } from '@primer/react/drafts';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { EventLog } from 'web3';
+import { EventLog, TransactionRevertWithCustomError } from 'web3';
 
 type IssuedCardEvent = {
   blockHash: string;
@@ -90,6 +92,9 @@ function Card({ card }: CardProps) {
   const [newExpirationTime, setNewExpirationTime] = useState<string | null>(
     null,
   );
+  const [extendCardExpTimeError, setExtendExpTimeError] = useState<
+    string | null
+  >();
 
   const { contract, account } = useWeb3Context();
 
@@ -129,11 +134,14 @@ function Card({ card }: CardProps) {
         });
 
       setNewExpirationTime(newExpirationDate.toLocaleDateString());
+      setIsExtendCardExpTimeModalOpen(false);
     } catch (error) {
       console.error(error);
+      if (error instanceof TransactionRevertWithCustomError) {
+        const { message } = error.customErrorArguments;
+        setExtendExpTimeError(String(message));
+      }
     }
-
-    setIsExtendCardExpTimeModalOpen(false);
   }
 
   useEffect(() => {
@@ -193,7 +201,20 @@ function Card({ card }: CardProps) {
         </span>
 
         <span>
-          <Text sx={{ display: 'block' }}>Transaction Hash:</Text>
+          <Link
+            style={{
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+            href={
+              process.env.NODE_ENV === 'production'
+                ? `https://sepolia.etherscan.io/tx/${card.transactionHash}`
+                : '#'
+            }
+            target={process.env.NODE_ENV === 'production' ? '_blank' : '_self'}
+          >
+            Transaction Hash:
+          </Link>
           <Label sx={{ backgroundColor: 'canvas.overlay', p: 2 }}>
             {card.transactionHash}
           </Label>
@@ -315,7 +336,13 @@ function Card({ card }: CardProps) {
             6 mêses?
           </Text>
 
-          <LoadingButton onClick={handleExtendCardExpirationTime}>
+          {extendCardExpTimeError && (
+            <Banner variant="critical" title={extendCardExpTimeError} />
+          )}
+          <LoadingButton
+            disabled={!!extendCardExpTimeError}
+            onClick={handleExtendCardExpirationTime}
+          >
             Confirmar
           </LoadingButton>
         </Box>
