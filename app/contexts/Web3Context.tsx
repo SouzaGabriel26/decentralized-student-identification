@@ -31,10 +31,14 @@ export default function Web3Provider({
     if (!provider) return null;
 
     if (provider === 'INJECTED') {
-      return new Web3(window.ethereum);
+      const ethWeb3Instance = new Web3(window.ethereum);
+      ethWeb3Instance.handleRevert = true;
+      return ethWeb3Instance;
     }
 
-    return new Web3(constants.ganache_url);
+    const ganacheWeb3Instance = new Web3(constants.ganache_url);
+    ganacheWeb3Instance.handleRevert = true;
+    return ganacheWeb3Instance;
   }, [provider]);
 
   const contract = useMemo(() => {
