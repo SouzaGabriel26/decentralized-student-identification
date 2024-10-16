@@ -58,6 +58,7 @@ export function createUserRepository() {
     findPendingUsers,
     deletePendingData,
     updateStatus,
+    updateTransactionHash,
     updatePublicKeys,
     updatePendingData,
     findPendingDataByUserId,
@@ -84,6 +85,7 @@ export function createUserRepository() {
         createdAt: true,
         role: true,
         password: withPassword,
+        transactionHash: true,
       },
     });
   }
@@ -132,6 +134,17 @@ export function createUserRepository() {
       },
       data: {
         status,
+      },
+    });
+  }
+
+  async function updateTransactionHash(id: string, transactionHash: string) {
+    return await prismaClient.user.update({
+      where: {
+        id,
+      },
+      data: {
+        transactionHash,
       },
     });
   }

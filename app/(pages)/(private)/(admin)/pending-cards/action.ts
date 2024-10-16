@@ -97,9 +97,20 @@ export async function deleteUserPendingDataAction(id: string) {
   return revalidatePath('/pending-cards');
 }
 
-export async function updateUserStatusAction(id: string, status: UserStatus) {
+type UpdateUserInput = {
+  status: UserStatus;
+  transactionHash: string;
+};
+
+export async function updateUserAction(id: string, input: UpdateUserInput) {
   const userRepository = createUserRepository();
-  await userRepository.updateStatus(id, status);
+
+  const updatePromises = Promise.all([
+    userRepository.updateStatus(id, input.status),
+    userRepository.updateTransactionHash(id, input.transactionHash),
+  ]);
+
+  await updatePromises;
 
   return revalidatePath('/pending-cards');
 }
