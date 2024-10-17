@@ -8,62 +8,57 @@ export type LoginInput = {
   password: string;
 };
 
-export function createLoginUseCase(
+export async function loginUseCase(
   userRepository: UserRepository,
   cryptographyService: CryptographyService,
+  input: LoginInput,
 ) {
-  return Object.freeze({
-    login,
-  });
-
-  async function login(input: LoginInput) {
-    const validationResult = schema.safeParse(input);
-    if (validationResult.error) {
-      return {
-        errors: validationResult.error.issues,
-        data: null,
-      };
-    }
-
-    const user = await userRepository.findByEmail(input.email, {
-      withPassword: true,
-    });
-    if (!user) {
-      return {
-        errors: [
-          {
-            path: ['email', 'password'],
-            message: 'Credenciais inválidas',
-          },
-        ] as ZodIssue[],
-        data: null,
-      };
-    }
-
-    const isPasswordValid = bcrypt.compareSync(input.password, user.password);
-    if (!isPasswordValid) {
-      return {
-        errors: [
-          {
-            path: ['email', 'password'],
-            message: 'Credenciais inválidas',
-          },
-        ] as ZodIssue[],
-        data: null,
-      };
-    }
-
-    const { token } = await cryptographyService.generateToken({
-      userId: user.id,
-    });
-
+  const validationResult = schema.safeParse(input);
+  if (validationResult.error) {
     return {
-      data: {
-        token,
-      },
-      errors: null,
+      errors: validationResult.error.issues,
+      data: null,
     };
   }
+
+  const user = await userRepository.findByEmail(input.email, {
+    withPassword: true,
+  });
+  if (!user) {
+    return {
+      errors: [
+        {
+          path: ['email', 'password'],
+          message: 'Credenciais inválidas',
+        },
+      ] as ZodIssue[],
+      data: null,
+    };
+  }
+
+  const isPasswordValid = bcrypt.compareSync(input.password, user.password);
+  if (!isPasswordValid) {
+    return {
+      errors: [
+        {
+          path: ['email', 'password'],
+          message: 'Credenciais inválidas',
+        },
+      ] as ZodIssue[],
+      data: null,
+    };
+  }
+
+  const { token } = await cryptographyService.generateToken({
+    userId: user.id,
+  });
+
+  return {
+    data: {
+      token,
+    },
+    errors: null,
+  };
 }
 
 const schema = z.object({
