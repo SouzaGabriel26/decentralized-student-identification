@@ -3,8 +3,8 @@ import { createUserRepository } from '@/repositories/userRepository';
 import { cryptography } from '@/services/cryptography';
 import { LambdaService } from '@/services/lambda';
 import {
-  createRegisterUserUseCase,
   RegisterUserInput,
+  registerUserUseCase,
 } from '@/useCases/registerUserUseCase';
 
 beforeAll(async () => {
@@ -22,11 +22,6 @@ describe('> Register User Use Case', () => {
 
   it('should return a error when send at least one invalid input field', async () => {
     const userRepository = createUserRepository();
-    const { registerUserUseCase } = createRegisterUserUseCase(
-      cryptography,
-      mockedLambdaService,
-      userRepository,
-    );
 
     const input: RegisterUserInput = {
       email: 'invalid_email',
@@ -42,7 +37,12 @@ describe('> Register User Use Case', () => {
       photo: new File([], 'photo.jpg'),
     };
 
-    const result = await registerUserUseCase(input);
+    const result = await registerUserUseCase(
+      userRepository,
+      cryptography,
+      mockedLambdaService,
+      input,
+    );
     expect(result).toStrictEqual({
       data: null,
       errors: [
@@ -58,11 +58,6 @@ describe('> Register User Use Case', () => {
 
   it('should create user and userPendingData returning a successfull message and privateKey', async () => {
     const userRepository = createUserRepository();
-    const { registerUserUseCase } = createRegisterUserUseCase(
-      cryptography,
-      mockedLambdaService,
-      userRepository,
-    );
 
     const input: RegisterUserInput = {
       email: 'testejohndoe@mail.com',
@@ -78,7 +73,12 @@ describe('> Register User Use Case', () => {
       photo: new File([], 'photo.jpg'),
     };
 
-    const result = await registerUserUseCase(input);
+    const result = await registerUserUseCase(
+      userRepository,
+      cryptography,
+      mockedLambdaService,
+      input,
+    );
     expect(result).toStrictEqual({
       errors: null,
       data: {

@@ -1,6 +1,6 @@
 import prismaClient from '@/lib/prismaClient';
 import { createUserRepository } from '@/repositories/userRepository';
-import { createUpdatePendingDataUseCase } from '@/useCases/updatePendingDataUseCase';
+import { updatePendingDataUseCase } from '@/useCases/updatePendingDataUseCase';
 import { randomUUID } from 'crypto';
 
 beforeAll(async () => {
@@ -10,8 +10,6 @@ beforeAll(async () => {
 describe('> Update Pending Data Use Case', () => {
   it('should return a error when send at least one invalid input field', async () => {
     const userRepository = createUserRepository();
-    const { updatePendingDataUseCase } =
-      createUpdatePendingDataUseCase(userRepository);
 
     const createdUser = await userRepository.create({
       name: 'user_to_update_use_case',
@@ -38,7 +36,7 @@ describe('> Update Pending Data Use Case', () => {
 
     // The input will always expect a full object because it will
     // be provided by the form data (update-profile).
-    const updatedPendingDat = await updatePendingDataUseCase({
+    const updatedPendingDat = await updatePendingDataUseCase(userRepository, {
       id: createdPendingData.id,
       dataToUpdate: {
         address: 'Test',

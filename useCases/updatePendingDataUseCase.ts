@@ -4,35 +4,32 @@ import {
 } from '@/repositories/userRepository';
 import { z } from 'zod';
 
-export function createUpdatePendingDataUseCase(userRepository: UserRepository) {
-  return Object.freeze({
-    updatePendingDataUseCase,
+export async function updatePendingDataUseCase(
+  userRepository: UserRepository,
+  input: UpdatePendingDataInput,
+) {
+  const validationResult = schema.safeParse({
+    ...input.dataToUpdate,
   });
-
-  async function updatePendingDataUseCase(input: UpdatePendingDataInput) {
-    const validationResult = schema.safeParse({
-      ...input.dataToUpdate,
-    });
-    if (validationResult.error) {
-      return {
-        errors: validationResult.error.issues,
-        data: null,
-      };
-    }
-
-    const { id: pendingDataId } = input;
-    await userRepository.updatePendingData({
-      id: pendingDataId,
-      dataToUpdate: validationResult.data,
-    });
-
+  if (validationResult.error) {
     return {
-      errors: null,
-      data: {
-        message: 'Dados atualizados com sucesso.',
-      },
+      errors: validationResult.error.issues,
+      data: null,
     };
   }
+
+  const { id: pendingDataId } = input;
+  await userRepository.updatePendingData({
+    id: pendingDataId,
+    dataToUpdate: validationResult.data,
+  });
+
+  return {
+    errors: null,
+    data: {
+      message: 'Dados atualizados com sucesso.',
+    },
+  };
 }
 
 const schema = z.object({

@@ -18,91 +18,86 @@ export type RegisterUserInput = {
   photo: File;
 };
 
-export function createRegisterUserUseCase(
+export async function registerUserUseCase(
+  userRepository: UserRepository,
   cryptographyService: CryptographyService,
   lambdaService: LambdaService,
-  userRepository: UserRepository,
+  input: RegisterUserInput,
 ) {
-  return Object.freeze({
-    registerUserUseCase,
-  });
-
-  async function registerUserUseCase(input: RegisterUserInput) {
-    const validationResult = schema.safeParse(input);
-    if (validationResult.error) {
-      return {
-        errors: validationResult.error.issues,
-        data: null,
-      };
-    }
-
-    if (input.password !== input.confirm_password) {
-      return {
-        errors: [
-          {
-            path: ['password', 'confirm_password'],
-            message: 'As senhas não coincidem',
-          } as ZodIssue,
-        ],
-        data: null,
-      };
-    }
-
-    const emailAlreadyExists = await userRepository.findByEmail(input.email);
-    if (emailAlreadyExists) {
-      return {
-        data: null,
-        errors: [
-          {
-            path: ['email'],
-            message: 'O email já está cadastrado',
-          } as ZodIssue,
-        ],
-      };
-    }
-
-    // TODO: handle cryptography passphrase differently from website password
-    const { privateKey, publicKey } = cryptographyService.generateKeyPairs({
-      passphrase: input.password,
-    });
-
-    const ethAddress = cryptographyService.generateEthAddress(publicKey);
-
-    const SALT_ROUNDS = 8;
-    const hashedPassword = bcrypt.hashSync(input.password, SALT_ROUNDS);
-
-    const { id: createdUserId } = await userRepository.create({
-      email: input.email,
-      name: input.name,
-      passwordHash: hashedPassword,
-      publicKey,
-      ethAddress,
-    });
-
-    const { file_url } = await lambdaService.uploadFile(input.photo);
-
-    // TODO: delete this information after admin approval
-    await userRepository.createPendingData(createdUserId, {
-      address: input.address,
-      cep: input.cep,
-      complement: input.complement,
-      course: input.course,
-      cpf: input.cpf,
-      number: input.number,
-      email: input.email,
-      name: input.name,
-      photoUrl: file_url,
-    });
-
-    // show privateKey just once
+  const validationResult = schema.safeParse(input);
+  if (validationResult.error) {
     return {
-      errors: null,
-      data: {
-        message: 'Usuário cadastrado com sucesso. Aprovação pendente!',
-        privateKey,
-      },
+      errors: validationResult.error.issues,
+      data: null,
     };
   }
+
+  if (input.password !== input.confirm_password) {
+    return {
+      errors: [
+        {
+          path: ['password', 'confirm_password'],
+          message: 'As senhas não coincidem',
+        } as ZodIssue,
+      ],
+      data: null,
+    };
+  }
+
+  const emailAlreadyExists = await userRepository.findByEmail(input.email);
+  if (emailAlreadyExists) {
+    return {
+      data: null,
+      errors: [
+        {
+          path: ['email'],
+          message: 'O email já está cadastrado',
+        } as ZodIssue,
+      ],
+    };
+  }
+
+  // TODO: handle cryptography passphrase differently from website password
+  const { privateKey, publicKey } = cryptographyService.generateKeyPairs({
+    passphrase: input.password,
+  });
+
+  const ethAddress = cryptographyService.generateEthAddress(publicKey);
+
+  const SALT_ROUNDS = 8;
+  const hashedPassword = bcrypt.hashSync(input.password, SALT_ROUNDS);
+
+  const { id: createdUserId } = await userRepository.create({
+    email: input.email,
+    name: input.name,
+    passwordHash: hashedPassword,
+    publicKey,
+    ethAddress,
+  });
+
+  const { file_url } = await lambdaService.uploadFile(input.photo);
+
+  // TODO: delete this information after admin approval
+  await userRepository.createPendingData(createdUserId, {
+    address: input.address,
+    cep: input.cep,
+    complement: input.complement,
+    course: input.course,
+    cpf: input.cpf,
+    number: input.number,
+    email: input.email,
+    name: input.name,
+    photoUrl: file_url,
+  });
+
+  // show privateKey just once
+  return {
+    errors: null,
+    data: {
+      message: 'Usuário cadastrado com sucesso. Aprovação pendente!',
+      privateKey,
+    },
+  };
 }
 
 const schema = z.object({
