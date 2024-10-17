@@ -12,7 +12,6 @@ type Web3ContextType = {
   web3Provider: Web3 | null;
   account: string | null;
   provider: 'GANACHE' | 'INJECTED' | null;
-  isLoadingProvider: boolean;
   contract: Contract<typeof abi> | null;
 };
 
@@ -25,7 +24,6 @@ export default function Web3Provider({
 }) {
   const [provider, setProvider] = useState<'GANACHE' | 'INJECTED' | null>(null);
   const [account, setAccount] = useState<string | null>(null);
-  const [isLoadingProvider, setIsLoadingProvider] = useState(false);
 
   const web3 = useMemo(() => {
     if (!provider) return null;
@@ -86,10 +84,9 @@ export default function Web3Provider({
       web3Provider: web3,
       account,
       provider,
-      isLoadingProvider,
       contract,
     }),
-    [web3, account, provider, isLoadingProvider, contract],
+    [web3, account, provider, contract],
   );
 
   return <Web3Context.Provider value={value}>{children}</Web3Context.Provider>;
