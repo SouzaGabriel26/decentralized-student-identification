@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { redirect, RedirectType } from 'next/navigation';
 
 export default async function Page() {
-  const signedUser = await identity.isLoggedIn();
+  const signedUser = await identity.getMe();
   if (!signedUser || signedUser.role === 'ADMIN') {
     return redirect('/', RedirectType.replace);
   }

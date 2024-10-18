@@ -15,7 +15,7 @@ async function signOutAction() {
 }
 
 export async function Header({ ...props }: BoxProps) {
-  const signedUser = await identity.isLoggedIn();
+  const signedUser = await identity.getMe();
 
   return (
     <Box
