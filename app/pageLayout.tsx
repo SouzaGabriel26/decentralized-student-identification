@@ -10,7 +10,7 @@ type Props = {
 };
 
 export async function PageLayout({ children }: Props) {
-  const userSigned = await identity.isLoggedIn();
+  const userSigned = await identity.getMe();
 
   return (
     <Box

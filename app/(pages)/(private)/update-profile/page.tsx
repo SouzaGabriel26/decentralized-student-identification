@@ -6,7 +6,7 @@ import { redirect, RedirectType } from 'next/navigation';
 import { EditUserRegisterForm } from './components/EditUserRegisterForm';
 
 export default async function Page() {
-  const signedUser = await identity.isLoggedIn();
+  const signedUser = await identity.getMe();
   const acceptedUserStatus: UserStatus[] = ['FORGOT_PK', 'REJECTED'];
 
   if (

@@ -6,7 +6,7 @@ type Props = {
   children: ReactNode;
 };
 export default async function Layout({ children }: Props) {
-  const signedUser = await identity.isLoggedIn();
+  const signedUser = await identity.getMe();
   if (!signedUser || signedUser.role !== 'ADMIN') {
     return redirect('/', RedirectType.replace);
   }

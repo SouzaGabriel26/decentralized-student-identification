@@ -4,7 +4,7 @@ import { createUserRepository } from '@/repositories/userRepository';
 import { cryptography } from '@/services/cryptography';
 import { lambda } from '@/services/lambda';
 import { forgotPrivateKeyUseCase } from '@/useCases/forgotPrivateKeyUseCase';
-import { createUpdatePendingDataUseCase } from '@/useCases/updatePendingDataUseCase';
+import { updatePendingDataUseCase } from '@/useCases/updatePendingDataUseCase';
 import { revalidatePath } from 'next/cache';
 import { ZodIssue } from 'zod';
 
@@ -52,8 +52,6 @@ async function updateRejectedPendingDataAction(
   input: EditUserRegisterFormProps,
 ) {
   const userRepository = createUserRepository();
-  const { updatePendingDataUseCase } =
-    createUpdatePendingDataUseCase(userRepository);
 
   const { userId, pendingDataId, ...data } = input;
 
@@ -72,7 +70,7 @@ async function updateRejectedPendingDataAction(
     dataToUpdate.photoUrl = file_url;
   }
 
-  const response = await updatePendingDataUseCase({
+  const response = await updatePendingDataUseCase(userRepository, {
     id: pendingDataId!,
     dataToUpdate,
   });

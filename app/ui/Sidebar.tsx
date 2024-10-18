@@ -4,7 +4,7 @@ import { Box, NavList } from '@primer/react';
 import { NavListItem } from '../components/NavListItem';
 
 export async function Sidebar() {
-  const userSignedIn = await identity.isLoggedIn();
+  const userSignedIn = await identity.getMe();
   const isUserAdmin = userSignedIn && userSignedIn.role === 'ADMIN';
   const userCanUpdateProfile =
     userSignedIn && ['FORGOT_PK', 'REJECTED'].includes(userSignedIn.status);

@@ -3,7 +3,7 @@ import { Box, Text } from '@primer/react';
 import Link from 'next/link';
 
 export default async function Home() {
-  const signedUser = await identity.isLoggedIn();
+  const signedUser = await identity.getMe();
 
   return (
     <Box>

@@ -4,10 +4,10 @@ import { jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 
 export const identity = Object.freeze({
-  isLoggedIn,
+  getMe,
 });
 
-async function isLoggedIn() {
+async function getMe() {
   const userId = await getUserIdFromJwtCookies();
 
   if (!userId) return null;
