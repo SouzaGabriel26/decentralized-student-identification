@@ -31,18 +31,22 @@ async function createPullRequestComment(comment: string) {
   const pullRequestNumber = process.env.STD_IDENTIFICATION_PULL_REQUEST_NUMBER;
   const token = process.env.VERCEL_TOKEN;
 
-  await fetch(
-    `https://api.github.com/repos/souzagabriel26/student-identification/issues/${pullRequestNumber}/comments`,
-    {
-      method: 'POST',
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28',
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/vnd.github+json',
+  try {
+    await fetch(
+      `https://api.github.com/repos/souzagabriel26/student-identification/issues/${pullRequestNumber}/comments`,
+      {
+        method: 'POST',
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28',
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/vnd.github+json',
+        },
+        body: JSON.stringify({
+          body: comment,
+        }),
       },
-      body: JSON.stringify({
-        body: comment,
-      }),
-    },
-  );
+    );
+  } catch {
+    console.log('Error creating pull request comment');
+  }
 }

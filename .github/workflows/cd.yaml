@@ -7,7 +7,7 @@ on:
 env:
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
   VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-  STD_IDENTIFICATION_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+  STD_IDENTIFICATION_PULL_REQUEST_NUMBER: ${{ github.event.number }}
 
 jobs:
   deploy:
