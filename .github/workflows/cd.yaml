@@ -1,0 +1,40 @@
+name: Node.js CD
+
+on:
+  push:
+    branches: ['main']
+
+env:
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+  STD_IDENTIFICATION_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+
+jobs:
+  deploy:
+    name: Deploy to vercel
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm i
+
+      - name: Apply all pending migrations
+        run: pnpx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Run deployment script
+        run: pnpm deployment
