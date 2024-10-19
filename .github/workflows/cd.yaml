@@ -33,8 +33,6 @@ jobs:
 
       - name: Apply all pending migrations
         run: pnpx prisma migrate deploy
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Run deployment script
         run: pnpm deployment
