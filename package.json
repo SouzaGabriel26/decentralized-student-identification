@@ -21,7 +21,8 @@
     "migrate": "prisma migrate dev",
     "prepare": "husky",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "deployment": "node --import tsx ./infra/script/deployment.ts"
   },
   "dependencies": {
     "@primer/octicons-react": "^19.11.0",
