@@ -17,13 +17,16 @@ async function deployment() {
   console.log('> Building on Vercel: Done');
 
   console.log('> Deploying on Vercel');
-  const { stdout: previewUrl } = await exec(
+  const { stdout: productionDeployUrl } = await exec(
     `vercel deploy --prod --token=${token}`,
   );
+  await exec(`vercel promote ${productionDeployUrl} --token=${token}`);
   console.log('> Deploying on Vercel: Done');
 
   console.log('> Creating pull request comment');
-  await createPullRequestComment(`Deployed on [Vercel](${previewUrl})`);
+  await createPullRequestComment(
+    `Deployed on [Vercel](${productionDeployUrl})`,
+  );
   console.log('> Creating pull request comment: Done');
 }
 
