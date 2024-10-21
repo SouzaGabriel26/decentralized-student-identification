@@ -3,7 +3,7 @@ import { promisify } from 'node:util';
 
 const exec = promisify(child_process_exec);
 
-//deployment();
+deployment();
 
 async function deployment() {
   const token = process.env.VERCEL_TOKEN;
@@ -20,7 +20,6 @@ async function deployment() {
   const { stdout: productionDeployUrl } = await exec(
     `vercel deploy --prod --token=${token}`,
   );
-  await exec(`vercel promote ${productionDeployUrl} --token=${token}`);
   console.log('> Deploying on Vercel: Done');
 
   console.log('> Creating pull request comment');
