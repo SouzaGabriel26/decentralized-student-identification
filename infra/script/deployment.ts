@@ -35,7 +35,7 @@ async function createPullRequestComment(comment: string) {
     return;
   }
 
-  const token = process.env.VERCEL_TOKEN;
+  const token = process.env.STD_IDENTIFICATION_GITHUB_TOKEN;
 
   try {
     const res = await fetch(
