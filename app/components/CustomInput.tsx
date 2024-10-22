@@ -23,10 +23,21 @@ export function CustomInput({
       id={inputId}
       sx={{
         width: '100%',
+        '@media (max-width: 480px)': {
+          height: 50,
+        },
       }}
       required={required}
     >
-      <FormControl.Label>{label}</FormControl.Label>
+      <FormControl.Label
+        sx={{
+          '@media (max-width: 480px)': {
+            fontSize: 12,
+          },
+        }}
+      >
+        {label}
+      </FormControl.Label>
       <TextInput name={name} block {...props} />
       {error && (
         <FormControl.Validation variant="error">{error}</FormControl.Validation>
