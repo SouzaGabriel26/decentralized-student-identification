@@ -3,6 +3,7 @@ import { constants } from '@/utils/constants';
 import { identity } from '@/utils/idendity';
 import { Box, BoxProps } from '@primer/react';
 import { cookies } from 'next/headers';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { Logo } from '../components/Logo';
 import { UserMenu } from '../components/UserMenu';
@@ -33,8 +34,9 @@ export async function Header({ ...props }: BoxProps) {
       }}
       {...props}
     >
-      <Logo />
-
+      <Link href="/">
+        <Logo />
+      </Link>
       <Box
         sx={{
           display: 'flex',
