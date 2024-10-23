@@ -1,4 +1,5 @@
 import { BaseStyles, theme, ThemeProvider } from '@primer/react';
+import { Analytics } from '@vercel/analytics/react';
 import type { Metadata } from 'next';
 import { PageLayout } from './pageLayout';
 import StyledComponentsRegistry from './StyledComponentsRegistry';
@@ -37,7 +38,10 @@ export default function RootLayout({
             nightScheme="dark_dimmed"
           >
             <BaseStyles>
-              <PageLayout>{children}</PageLayout>
+              <PageLayout>
+                {children}
+                <Analytics />
+              </PageLayout>
             </BaseStyles>
           </ThemeProvider>
         </StyledComponentsRegistry>
