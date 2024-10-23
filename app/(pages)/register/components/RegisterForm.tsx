@@ -58,6 +58,7 @@ export function RegisterForm() {
         sx={{
           display: 'flex',
           gap: 2,
+          mt: 2,
           '@media (max-width: 480px)': {
             flexDirection: 'column',
           },
@@ -79,84 +80,122 @@ export function RegisterForm() {
         />
       </Box>
 
-      <Text
+      <Box
         sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
           mt: 2,
         }}
       >
-        Sobre o aluno:
-      </Text>
+        <CustomInput
+          label="CPF"
+          name="cpf"
+          type="number"
+          required
+          error={getErrorMessage('cpf')}
+        />
+        <CustomInput
+          label="Cep"
+          name="cep"
+          type="number"
+          required
+          error={getErrorMessage('cep')}
+        />
+        <CustomInput
+          label="Endereço"
+          name="address"
+          required
+          error={getErrorMessage('address')}
+        />
+        <CustomInput
+          label="Número"
+          name="number"
+          type="number"
+          required
+          error={getErrorMessage('number')}
+        />
+        <CustomInput
+          label="Complemento"
+          name="complement"
+          error={getErrorMessage('complement')}
+        />
 
-      <CustomInput
-        label="CPF"
-        name="cpf"
-        type="number"
-        required
-        error={getErrorMessage('cpf')}
-      />
-      <CustomInput
-        label="Cep"
-        name="cep"
-        type="number"
-        required
-        error={getErrorMessage('cep')}
-      />
-      <CustomInput
-        label="Endereço"
-        name="address"
-        required
-        error={getErrorMessage('address')}
-      />
-      <CustomInput
-        label="Número"
-        name="number"
-        type="number"
-        required
-        error={getErrorMessage('number')}
-      />
-      <CustomInput
-        label="Complemento"
-        name="complement"
-        error={getErrorMessage('complement')}
-      />
+        <Box
+          sx={{
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+          }}
+        >
+          <Text
+            as="label"
+            htmlFor="course"
+            sx={{
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              fontSize: 14,
+              '@media (max-width: 480px)': {
+                fontSize: 12,
+              },
+            }}
+          >
+            Curso desejado
+          </Text>
+          <CustomSelect
+            id="course"
+            name="course"
+            required
+            options={[
+              { value: '', label: '' },
+              {
+                value: 'ciencia-da-computacao',
+                label: 'Ciência da Computação',
+              },
+              {
+                value: 'engenharia-de-software',
+                label: 'Engenharia de Software',
+              },
+              {
+                value: 'sistemas-de-informacao',
+                label: 'Sistemas de Informação',
+              },
+            ]}
+          />
+        </Box>
 
-      <label
-        htmlFor="course"
-        style={{ fontWeight: 'bold', cursor: 'pointer', fontSize: 14 }}
-      >
-        Curso desejado
-      </label>
-      <CustomSelect
-        id="course"
-        name="course"
-        required
-        options={[
-          { value: '', label: '' },
-          { value: 'ciencia-da-computacao', label: 'Ciência da Computação' },
-          {
-            value: 'engenharia-de-software',
-            label: 'Engenharia de Software',
-          },
-          {
-            value: 'sistemas-de-informacao',
-            label: 'Sistemas de Informação',
-          },
-        ]}
-      />
-
-      <label
-        htmlFor="photo"
-        style={{ fontWeight: 'bold', cursor: 'pointer', fontSize: 14 }}
-      >
-        Foto do aluno
-      </label>
-      <input
-        type="file"
-        name="photo"
-        id="photo"
-        accept="image/png, image/jpg, image/jpeg"
-        required
-      />
+        <Box
+          sx={{
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+          }}
+        >
+          <Text
+            as="label"
+            htmlFor="photo"
+            sx={{
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              fontSize: 14,
+              '@media (max-width: 480px)': {
+                fontSize: 12,
+              },
+            }}
+          >
+            Foto do aluno
+          </Text>
+          <input
+            type="file"
+            name="photo"
+            id="photo"
+            accept="image/png, image/jpg, image/jpeg"
+            required
+          />
+        </Box>
+      </Box>
 
       <LoadingButton>Solicitar Matrícula</LoadingButton>
     </form>

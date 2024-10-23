@@ -1,9 +1,11 @@
 import { ThemeSwitcher } from '@/app/components/ThemeSwitcher';
 import { constants } from '@/utils/constants';
 import { identity } from '@/utils/idendity';
-import { Box, BoxProps, Text } from '@primer/react';
+import { Box, BoxProps } from '@primer/react';
 import { cookies } from 'next/headers';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { Logo } from '../components/Logo';
 import { UserMenu } from '../components/UserMenu';
 
 async function signOutAction() {
@@ -21,7 +23,7 @@ export async function Header({ ...props }: BoxProps) {
     <Box
       as="header"
       sx={{
-        p: 4,
+        p: 2,
         display: 'flex',
         width: '100%',
         height: 'fit-content',
@@ -32,14 +34,9 @@ export async function Header({ ...props }: BoxProps) {
       }}
       {...props}
     >
-      <Text
-        sx={{
-          fontWeight: 'bold',
-        }}
-      >
-        Logo FAESA
-      </Text>
-
+      <Link href="/">
+        <Logo />
+      </Link>
       <Box
         sx={{
           display: 'flex',

@@ -18,7 +18,7 @@ export function LoginForm() {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        gap: 2,
+        gap: 8,
         maxWidth: 400,
         width: '100%',
       }}
