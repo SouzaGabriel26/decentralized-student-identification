@@ -10,6 +10,9 @@ export default function Page() {
         alignItems: 'center',
         flexDirection: 'column',
         overflowY: 'auto',
+        '@media (min-width: 500px)': {
+          justifyContent: 'center',
+        },
       }}
     >
       <RegisterForm />
