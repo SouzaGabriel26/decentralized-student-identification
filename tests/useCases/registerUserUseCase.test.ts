@@ -84,6 +84,7 @@ describe('> Register User Use Case', () => {
       data: {
         message: 'Usuário cadastrado com sucesso. Aprovação pendente!',
         privateKey: expect.any(String),
+        userName: 'John Doe',
       },
     });
 
