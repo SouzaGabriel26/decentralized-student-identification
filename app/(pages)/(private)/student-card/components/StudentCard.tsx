@@ -7,6 +7,7 @@ import { CheckCircleFillIcon, XCircleFillIcon } from '@primer/octicons-react';
 import {
   Box,
   Button,
+  Checkbox,
   Dialog,
   Label,
   Text,
@@ -144,6 +145,9 @@ export function StudentCard({ ethAddress, userId }: StudentCardProps) {
     const [privateKey, setPrivateKey] = useState('');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [invalidCredentialsError, setInvalidCredentialsError] = useState('');
+    const [privateKeyMode, setPrivateKeyMode] = useState<'write' | 'file'>(
+      'write',
+    );
 
     async function handleDecryptStudentCard(event: React.FormEvent) {
       event.preventDefault();
@@ -179,7 +183,7 @@ export function StudentCard({ ethAddress, userId }: StudentCardProps) {
           }}
         >
           <form>
-            <Dialog.Header id="header">Title</Dialog.Header>
+            <Dialog.Header id="header">Descriptografar carteira</Dialog.Header>
             <Box
               sx={{
                 padding: 3,
@@ -188,12 +192,63 @@ export function StudentCard({ ethAddress, userId }: StudentCardProps) {
                 gap: 2,
               }}
             >
-              <label htmlFor="private_key">Chave privada:</label>
-              <Textarea
-                id="private_key"
-                sx={{ padding: '10px', borderRadius: '4px' }}
-                onChange={(e) => setPrivateKey(e.target.value)}
-              />
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: 2,
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <label htmlFor="private-key-mode">
+                  Habilitar upload de arquivo para chave privada
+                </label>
+                <Checkbox
+                  sx={{
+                    borderRadius: '50%',
+                  }}
+                  id="private-key-mode"
+                  onChange={() => {
+                    setPrivateKeyMode(
+                      privateKeyMode === 'write' ? 'file' : 'write',
+                    );
+                  }}
+                />
+              </Box>
+
+              {privateKeyMode === 'write' && (
+                <>
+                  <label htmlFor="private_key">Chave privada:</label>
+                  <Textarea
+                    id="private_key"
+                    sx={{ padding: '10px', borderRadius: '4px' }}
+                    onChange={(e) => setPrivateKey(e.target.value)}
+                  />
+                </>
+              )}
+
+              {privateKeyMode === 'file' && (
+                <CustomInput
+                  sx={{
+                    padding: '10px',
+                    borderRadius: '4px',
+                  }}
+                  label="Chave privada"
+                  name="private_key"
+                  type="file"
+                  accept=".txt"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                      setPrivateKey(e.target?.result as string);
+                    };
+                    reader.readAsText(file);
+                  }}
+                />
+              )}
 
               <CustomInput
                 label="Senha"

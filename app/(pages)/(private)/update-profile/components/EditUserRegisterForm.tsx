@@ -35,6 +35,7 @@ export function EditUserRegisterForm({
         data={{
           message: state.data.message,
           privateKey: state.data.privateKey,
+          userName: user.name,
         }}
         type="forgotPrivateKey"
       />

@@ -95,6 +95,7 @@ export async function registerUserUseCase(
     errors: null,
     data: {
       message: 'Usuário cadastrado com sucesso. Aprovação pendente!',
+      userName: input.name,
       privateKey,
     },
   };
