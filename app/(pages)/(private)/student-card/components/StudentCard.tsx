@@ -236,6 +236,7 @@ export function StudentCard({ ethAddress, userId }: StudentCardProps) {
                   label="Chave privada"
                   name="private_key"
                   type="file"
+                  accept=".txt"
                   onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (!file) return;
