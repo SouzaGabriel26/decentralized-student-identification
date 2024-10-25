@@ -14,6 +14,7 @@ import {
 } from '@primer/react';
 import { Banner, DataTable, Table } from '@primer/react/drafts';
 import { UserPendingData } from '@prisma/client';
+import Image from 'next/image';
 import { useState } from 'react';
 import {
   deleteUserPendingDataAction,
@@ -28,6 +29,18 @@ type PendingTableProps = {
 
 export function PendingTable({ pendingCards }: PendingTableProps) {
   const { account, provider } = useWeb3Context();
+  const [isUserImageModalOpen, setIsUserImageModalOpen] = useState(false);
+  const [userFocused, setUserFocused] = useState<UserPendingData | null>(null);
+
+  function handleOpenImageModal(pendingData: UserPendingData) {
+    setUserFocused(pendingData);
+    setIsUserImageModalOpen(true);
+  }
+
+  function handleCloseImageModal() {
+    setUserFocused(null);
+    setIsUserImageModalOpen(false);
+  }
 
   return (
     <>
@@ -71,9 +84,20 @@ export function PendingTable({ pendingCards }: PendingTableProps) {
               header: 'Foto',
               field: 'photoUrl',
               maxWidth: '80px',
-              renderCell: (row) => {
+              renderCell: (pendingData) => {
                 return (
-                  <Avatar src={row.photoUrl} alt={`foto de ${row.name}`} />
+                  <Avatar
+                    sx={{
+                      ':hover': {
+                        cursor: 'pointer',
+                      },
+                      width: 30,
+                      height: 30,
+                    }}
+                    onClick={() => handleOpenImageModal(pendingData)}
+                    src={pendingData.photoUrl}
+                    alt={`foto de ${pendingData.name}`}
+                  />
                 );
               },
             },
@@ -100,8 +124,8 @@ export function PendingTable({ pendingCards }: PendingTableProps) {
             {
               header: 'Complemento',
               field: 'complement',
-              renderCell: (row) => {
-                return row.complement || 'Nenhum';
+              renderCell: (pendingData) => {
+                return pendingData.complement || 'Nenhum';
               },
             },
             {
@@ -111,18 +135,20 @@ export function PendingTable({ pendingCards }: PendingTableProps) {
             {
               header: 'Data de solicitação',
               field: 'createdAt',
-              renderCell: (row) => {
-                return new Date(row.createdAt).toLocaleDateString('pt-BR');
+              renderCell: (pendingData) => {
+                return new Date(pendingData.createdAt).toLocaleDateString(
+                  'pt-BR',
+                );
               },
               align: 'end',
             },
             {
               header: 'Ações',
               field: 'id',
-              renderCell: (row) => {
+              renderCell: (pendingData) => {
                 return (
                   <Table.Actions>
-                    <Actions userPendingData={row} />
+                    <Actions userPendingData={pendingData} />
                   </Table.Actions>
                 );
               },
@@ -130,6 +156,40 @@ export function PendingTable({ pendingCards }: PendingTableProps) {
           ]}
         />
       </Table.Container>
+
+      <Dialog
+        isOpen={isUserImageModalOpen && !!userFocused}
+        onDismiss={() => handleCloseImageModal()}
+      >
+        <Dialog.Header id="header">Foto de {userFocused?.name}</Dialog.Header>
+
+        <Box
+          sx={{
+            p: 2,
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
+          <Box
+            sx={{
+              position: 'relative',
+              height: '350px',
+              width: '300px',
+            }}
+          >
+            <Image
+              src={userFocused?.photoUrl ?? ''}
+              alt="Foto do aluno"
+              fill
+              sizes="100%"
+              style={{
+                objectFit: 'cover',
+                borderRadius: '4px',
+              }}
+            />
+          </Box>
+        </Box>
+      </Dialog>
     </>
   );
 }
