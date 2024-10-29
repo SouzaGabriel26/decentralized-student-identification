@@ -355,7 +355,7 @@ describe('> Forgot Private Key Use Case', () => {
       complement: pendingDataInput.complement,
       course: pendingDataInput.course,
       photoUrl: '',
-      rejection_reason: null,
+      rejectionReason: null,
       createdAt: expect.any(Date),
     });
 
