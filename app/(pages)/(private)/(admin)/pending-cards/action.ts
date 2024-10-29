@@ -18,7 +18,7 @@ export async function encryptUserPendingDataAction(
 
   // if data is too big for unique encryption, split it in two parts
   const stringfiedData = JSON.stringify(userPendingData);
-  if (stringfiedData.length > 470) {
+  if (stringfiedData.length >= 470) {
     const {
       id,
       userId,

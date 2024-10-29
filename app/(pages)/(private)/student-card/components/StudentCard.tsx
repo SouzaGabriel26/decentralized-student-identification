@@ -2,7 +2,6 @@
 
 import { CustomInput } from '@/app/components/CustomInput';
 import { LoadingButton } from '@/app/components/LoadingButton';
-import { useWeb3Context } from '@/app/contexts/Web3Context';
 import { CheckCircleFillIcon, XCircleFillIcon } from '@primer/octicons-react';
 import {
   Box,
@@ -18,14 +17,14 @@ import { Banner } from '@primer/react/drafts';
 import { Divider } from '@primer/react/lib-esm/deprecated/ActionList/Divider';
 import { UserPendingData } from '@prisma/client';
 import Image from 'next/image';
-import { ReactNode, useEffect, useState } from 'react';
-import { ContractExecutionError } from 'web3';
+import { ReactNode, useState } from 'react';
 import { decryptUserDataAction } from '../action';
 import { ForgotPrivateKeyForm } from './ForgotPrivateKeyForm';
 
 type StudentCardProps = {
   ethAddress: string;
   userId: string;
+  studentCard: Card;
 };
 
 type Card = {
@@ -35,51 +34,13 @@ type Card = {
   isValid: boolean;
 };
 
-export function StudentCard({ ethAddress, userId }: StudentCardProps) {
-  const [cardNotFoundError, setCardNotFoundError] = useState('');
-  const [ethStudentCard, setEthStudentCard] = useState<Card | null>(null);
+export function StudentCard({
+  ethAddress,
+  userId,
+  studentCard,
+}: StudentCardProps) {
   const [decryptedStudentCard, setDecryptedStudentCard] =
     useState<UserPendingData | null>(null);
-
-  const { contract } = useWeb3Context();
-
-  useEffect(() => {
-    getStudentCard();
-
-    async function getStudentCard() {
-      try {
-        if (!contract) return;
-
-        const studentCard = await contract.methods.getCard(ethAddress).call();
-        if (studentCard) {
-          setEthStudentCard({
-            expDate: Number(studentCard.expDate),
-            hashCard: studentCard.hashCard,
-            studentPublicKey: studentCard.studentPublicKey,
-            isValid: studentCard.isValid,
-          });
-        }
-      } catch (error) {
-        console.log(error);
-        if (error instanceof ContractExecutionError) {
-          process.env.NODE_ENV === 'development' && console.error(error);
-          setCardNotFoundError(String(error.cause.errorArgs!.message));
-        }
-      }
-    }
-  }, [contract, ethAddress]);
-
-  if (cardNotFoundError) {
-    return (
-      <Banner
-        title={cardNotFoundError}
-        variant="critical"
-        description={
-          'Pode ser que sua solicitação ainda não foi aceita, tente novamente mais tarde ou entre em contato com a administração.'
-        }
-      />
-    );
-  }
 
   return (
     <Box
@@ -98,7 +59,7 @@ export function StudentCard({ ethAddress, userId }: StudentCardProps) {
         fontWeight="bold"
         sx={{ display: 'flex', gap: 2, alignItems: 'center' }}
       >
-        {ethStudentCard && !decryptedStudentCard && (
+        {!decryptedStudentCard && (
           <>
             Carteira criptografada
             <XCircleFillIcon />
@@ -113,9 +74,9 @@ export function StudentCard({ ethAddress, userId }: StudentCardProps) {
         )}
       </Text>
 
-      {ethStudentCard && !decryptedStudentCard && (
+      {!decryptedStudentCard && (
         <>
-          <EncryptedStudentCard {...ethStudentCard} />
+          <EncryptedStudentCard {...studentCard} />
           <Box
             sx={{
               display: 'flex',
@@ -153,7 +114,7 @@ export function StudentCard({ ethAddress, userId }: StudentCardProps) {
       event.preventDefault();
 
       const result = await decryptUserDataAction({
-        encryptedData: ethStudentCard!.hashCard,
+        encryptedData: studentCard.hashCard,
         privateKey,
         passphrase: password,
       });
@@ -169,7 +130,7 @@ export function StudentCard({ ethAddress, userId }: StudentCardProps) {
     return (
       <Box>
         <Button
-          disabled={!ethStudentCard?.isValid}
+          disabled={!studentCard.isValid}
           onClick={() => setIsDialogOpen(true)}
         >
           Descriptografar carteira
