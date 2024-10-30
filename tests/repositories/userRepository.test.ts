@@ -154,6 +154,9 @@ describe('> User Repository', () => {
         photoUrl: 'http://test.com/photo.jpg',
         rejectionReason: null,
         createdAt: expect.any(Date),
+        user: {
+          oldEthAddress: null,
+        },
       },
     ]);
   });
