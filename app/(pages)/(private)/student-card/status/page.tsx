@@ -19,7 +19,7 @@ export default async function Page() {
       signedUser.id,
     );
 
-    rejectionReason = pendingUserData?.rejection_reason ?? '';
+    rejectionReason = pendingUserData?.rejectionReason ?? '';
     revalidatePath('/student-card/status');
   }
 

@@ -81,7 +81,7 @@ export function EditUserRegisterForm({
               size="large"
               variant={user.status === 'FORGOT_PK' ? 'attention' : 'danger'}
             >
-              {user.status}
+              {user.status === 'FORGOT_PK' && 'Esqueceu a chave privada'}
             </Label>
           </Box>
 

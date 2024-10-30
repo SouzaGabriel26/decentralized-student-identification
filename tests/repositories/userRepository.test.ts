@@ -152,8 +152,11 @@ describe('> User Repository', () => {
         complement: 'Casa',
         course: 'Ciência da Computação',
         photoUrl: 'http://test.com/photo.jpg',
-        rejection_reason: null,
+        rejectionReason: null,
         createdAt: expect.any(Date),
+        user: {
+          oldEthAddress: null,
+        },
       },
     ]);
   });
@@ -259,7 +262,7 @@ describe('> User Repository', () => {
       number: '123',
       course: 'Ciência da Computação',
       photoUrl: 'http://test.com/photo.jpg',
-      rejection_reason: null,
+      rejectionReason: null,
       createdAt: expect.any(Date),
     });
   });

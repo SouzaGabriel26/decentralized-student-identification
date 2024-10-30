@@ -1,3 +1,4 @@
+import { contractAddress } from '@/contract/contract-address';
 import { abi } from '@/contract/smart-contract-abi';
 import { constants } from '@/utils/constants';
 import { identity } from '@/utils/idendity';
@@ -28,11 +29,19 @@ export default async function Page() {
     );
   }
 
-  const web3 = new Web3(
-    `https://sepolia.infura.io/v3/${process.env.INFURA_API_KEY}`,
-  );
+  const studentWeb3Provider =
+    process.env.NODE_ENV === 'production'
+      ? `https://sepolia.infura.io/v3/${process.env.INFURA_API_KEY}`
+      : constants.ganache_url;
 
-  const contract = new web3.eth.Contract(abi, constants.smart_contract_address);
+  const web3 = new Web3(studentWeb3Provider);
+
+  const smartContractAddress =
+    process.env.NODE_ENV === 'production'
+      ? constants.smart_contract_address
+      : contractAddress;
+
+  const contract = new web3.eth.Contract(abi, smartContractAddress);
 
   const studentCard = await contract.methods
     .getCard(signedUser.ethAddress)
