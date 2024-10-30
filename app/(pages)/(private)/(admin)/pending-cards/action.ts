@@ -33,7 +33,7 @@ export async function encryptUserPendingDataAction(
       number,
       photoUrl,
       registration,
-      rejection_reason,
+      rejectionReason,
     } = userPendingData;
 
     const firstPart = cryptography.encryptData({
@@ -56,7 +56,7 @@ export async function encryptUserPendingDataAction(
         number,
         photoUrl,
         registration,
-        rejection_reason,
+        rejectionReason,
       },
       publicKey: user.publicKey,
     });
@@ -115,6 +115,13 @@ export async function updateUserAction(id: string, input: UpdateUserInput) {
   return revalidatePath('/pending-cards');
 }
 
+export async function resetOldEthAddressAction(userId: string) {
+  const userRepository = createUserRepository();
+  await userRepository.updateOldEthAddress(userId, '');
+
+  return revalidatePath('/pending-cards');
+}
+
 export async function updateUserRejectionReasonAction(
   id: string,
   rejection_reason: string,
@@ -123,7 +130,7 @@ export async function updateUserRejectionReasonAction(
   await userRepository.updatePendingData({
     id,
     dataToUpdate: {
-      rejection_reason,
+      rejectionReason: rejection_reason,
     },
   });
 }

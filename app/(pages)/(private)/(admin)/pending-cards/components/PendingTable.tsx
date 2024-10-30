@@ -2,6 +2,7 @@
 
 import { LoadingButton } from '@/app/components/LoadingButton';
 import { useWeb3Context } from '@/app/contexts/Web3Context';
+import { PendingUsersOutput } from '@/repositories/userRepository';
 import { KebabHorizontalIcon } from '@primer/octicons-react';
 import {
   ActionList,
@@ -19,12 +20,13 @@ import { useState } from 'react';
 import {
   deleteUserPendingDataAction,
   encryptUserPendingDataAction,
+  resetOldEthAddressAction,
   updateUserAction,
   updateUserRejectionReasonAction,
 } from '../action';
 
 type PendingTableProps = {
-  pendingCards: UserPendingData[];
+  pendingCards: PendingUsersOutput;
 };
 
 export function PendingTable({ pendingCards }: PendingTableProps) {
@@ -99,6 +101,21 @@ export function PendingTable({ pendingCards }: PendingTableProps) {
                     alt={`foto de ${pendingData.name}`}
                   />
                 );
+              },
+            },
+            {
+              header: 'Name',
+              field: 'name',
+            },
+            {
+              header: 'Tipo solicitação',
+              field: 'user.oldEthAddress',
+              renderCell: (pendingData) => {
+                if (pendingData.user.oldEthAddress) {
+                  return '2° via';
+                }
+
+                return '1° via';
               },
             },
             {
@@ -195,7 +212,7 @@ export function PendingTable({ pendingCards }: PendingTableProps) {
 }
 
 type ActionsProps = {
-  userPendingData: UserPendingData;
+  userPendingData: PendingUsersOutput[0];
 };
 
 function Actions({ userPendingData }: ActionsProps) {
@@ -205,8 +222,8 @@ function Actions({ userPendingData }: ActionsProps) {
 
   const { web3Provider, account, contract } = useWeb3Context();
 
-  async function handleIssueCard(userPendingData: UserPendingData) {
-    if (!web3Provider || !contract) return;
+  async function handleIssueCard() {
+    if (!web3Provider || !contract || !account) return;
 
     const { data, error } = await encryptUserPendingDataAction(userPendingData);
 
@@ -214,6 +231,17 @@ function Actions({ userPendingData }: ActionsProps) {
       setErrorMessage(error);
       setIsDialogOpen(true);
       return;
+    }
+
+    if (userPendingData.user.oldEthAddress) {
+      // Invalidate old student card if it exists
+      await contract.methods
+        .invalidateCard(userPendingData.user.oldEthAddress)
+        .send({
+          from: account,
+        });
+
+      await resetOldEthAddressAction(userPendingData.userId);
     }
 
     const currentDate = new Date();
@@ -229,7 +257,7 @@ function Actions({ userPendingData }: ActionsProps) {
           data.userEthAddress,
         )
         .send({
-          from: account ?? undefined,
+          from: account,
           gas: '3000000',
           gasPrice: web3Provider.utils.toWei('10', 'gwei'),
         })
@@ -281,7 +309,7 @@ function Actions({ userPendingData }: ActionsProps) {
           <ActionList>
             <ActionList.Item
               onClick={async () => {
-                await handleIssueCard(userPendingData);
+                await handleIssueCard();
               }}
             >
               Aprovar
