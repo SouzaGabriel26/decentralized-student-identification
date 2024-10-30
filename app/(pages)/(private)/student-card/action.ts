@@ -37,12 +37,19 @@ export async function decryptUserDataAction({
   };
 }
 
-export async function updateUserStatusAction(payload: {
+export async function updateUserAction(payload: {
   userId: string;
   status: UserStatus;
+  oldEthAddress: string;
 }) {
   const userRepository = createUserRepository();
 
-  await userRepository.updateStatus(payload.userId, payload.status);
+  const updatePromises = [
+    userRepository.updateStatus(payload.userId, payload.status),
+    userRepository.updateOldEthAddress(payload.userId, payload.oldEthAddress),
+  ];
+
+  await Promise.all(updatePromises);
+
   return redirect('/student-card/status');
 }

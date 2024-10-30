@@ -1,11 +1,10 @@
 'use client';
 
 import { LoadingButton } from '@/app/components/LoadingButton';
-import { useWeb3Context } from '@/app/contexts/Web3Context';
 import { Box, Button, Dialog, Label, Text } from '@primer/react';
 import { Divider } from '@primer/react/lib-esm/ActionList/Divider';
 import { useState } from 'react';
-import { updateUserStatusAction } from '../action';
+import { updateUserAction } from '../action';
 
 type ForgotPrivateKeyFormProps = {
   ethAddress: string;
@@ -19,14 +18,12 @@ export function ForgotPrivateKeyForm({
   const [isForgotPrivateKeyModalOpen, setIsForgotPrivateKeyModalOpen] =
     useState(false);
 
-  const { account, contract } = useWeb3Context();
-
   async function handleForgotPrivateKey() {
-    if (!contract || !account) return;
-
-    await contract.methods.invalidateCard(ethAddress).send({ from: account });
-
-    updateUserStatusAction({ status: 'FORGOT_PK', userId });
+    await updateUserAction({
+      userId,
+      status: 'FORGOT_PK',
+      oldEthAddress: ethAddress,
+    });
 
     setIsForgotPrivateKeyModalOpen(false);
   }

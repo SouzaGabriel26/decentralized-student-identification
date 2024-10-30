@@ -37,7 +37,7 @@ export type UpdatePendingDataInput = {
     complement?: string;
     course?: string;
     photoUrl?: string;
-    rejection_reason?: string;
+    rejectionReason?: string;
   };
 };
 
@@ -46,6 +46,10 @@ type UpdatePublicKeysInput = {
   publicKey: string;
   ethAddress: string;
 };
+
+export type PendingUsersOutput = Awaited<
+  ReturnType<UserRepository['findPendingUsers']>
+>;
 
 export type UserRepository = ReturnType<typeof createUserRepository>;
 
@@ -58,6 +62,7 @@ export function createUserRepository() {
     findPendingUsers,
     deletePendingData,
     updateStatus,
+    updateOldEthAddress,
     updateTransactionHash,
     updatePublicKeys,
     updatePendingData,
@@ -81,6 +86,7 @@ export function createUserRepository() {
         email: true,
         publicKey: true,
         ethAddress: true,
+        oldEthAddress: true,
         status: true,
         createdAt: true,
         role: true,
@@ -149,6 +155,17 @@ export function createUserRepository() {
     });
   }
 
+  async function updateOldEthAddress(userId: string, ethAddress: string) {
+    return await prismaClient.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        oldEthAddress: ethAddress,
+      },
+    });
+  }
+
   async function updatePublicKeys({
     userId,
     ethAddress,
@@ -198,6 +215,13 @@ export function createUserRepository() {
           status: 'PENDING',
           AND: {
             role: 'USER',
+          },
+        },
+      },
+      include: {
+        user: {
+          select: {
+            oldEthAddress: true,
           },
         },
       },
