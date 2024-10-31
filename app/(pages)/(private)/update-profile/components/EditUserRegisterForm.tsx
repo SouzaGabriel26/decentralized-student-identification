@@ -82,6 +82,7 @@ export function EditUserRegisterForm({
               variant={user.status === 'FORGOT_PK' ? 'attention' : 'danger'}
             >
               {user.status === 'FORGOT_PK' && 'Esqueceu a chave privada'}
+              {user.status === 'REJECTED' && 'Solicitação rejeitada'}
             </Label>
           </Box>
 

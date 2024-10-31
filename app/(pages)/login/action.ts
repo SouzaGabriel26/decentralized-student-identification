@@ -23,10 +23,11 @@ export async function tryToLoginAction(_state: unknown, formData: FormData) {
 
   if (resultFromTryToLogin.data) {
     const { token } = resultFromTryToLogin.data;
-    const sevenDaysInMilliseconds = 60 * 60 * 24 * 7 * 1000;
     cookies().set(constants.access_token_key, token, {
-      expires: new Date(Date.now() + sevenDaysInMilliseconds),
       httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60, // 7 days
+      path: '/',
+      sameSite: 'strict',
     });
 
     redirect('/');

@@ -10,3 +10,4 @@ services:
       - POSTGRES_HOST=${DEFAULT_POSTGRES_HOST}
       - POSTGRES_PORT=${DEFAULT_POSTGRES_PORT}
       - POSTGRES_DB=${DEFAULT_POSTGRES_DB}
+    restart: 'always'
