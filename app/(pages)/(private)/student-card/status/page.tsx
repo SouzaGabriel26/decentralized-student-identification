@@ -67,7 +67,9 @@ export default async function Page() {
         >
           <Text sx={{ mr: 2 }}>Justificativa: {rejectionReason}</Text>
 
-          <Link href="/update-profile">Atualizar informações</Link>
+          <Link style={{ color: '#539bf5' }} href="/update-profile">
+            Atualizar informações
+          </Link>
         </Box>
       )}
 
@@ -81,7 +83,10 @@ export default async function Page() {
           <ol>
             <li>
               preencha novamente o
-              <Link href="/update-profile"> formulário </Link>
+              <Link style={{ color: '#539bf5' }} href="/update-profile">
+                {' '}
+                formulário{' '}
+              </Link>
               com seus dados.
             </li>
 

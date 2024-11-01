@@ -234,7 +234,7 @@ function Actions({ userPendingData }: ActionsProps) {
     }
 
     if (userPendingData.user.oldEthAddress) {
-      // Invalidate old student card if it exists
+      // Invalidates old student card if it exists
       await contract.methods
         .invalidateCard(userPendingData.user.oldEthAddress)
         .send({
@@ -262,10 +262,15 @@ function Actions({ userPendingData }: ActionsProps) {
           gasPrice: web3Provider.utils.toWei('10', 'gwei'),
         })
         .on('transactionHash', async (hash) => {
-          await updateUserAction(userPendingData.userId, {
-            status: 'APPROVED',
-            transactionHash: hash,
-          });
+          const actionsPromises = Promise.all([
+            updateUserAction(userPendingData.userId, {
+              status: 'APPROVED',
+              transactionHash: hash,
+            }),
+            deleteUserPendingDataAction(userPendingData.id),
+          ]);
+
+          await actionsPromises;
         });
 
       console.log({
@@ -273,8 +278,6 @@ function Actions({ userPendingData }: ActionsProps) {
         expDate: expirationDateInTimestamp,
         studentPublicKey: data.userEthAddress,
       });
-
-      await deleteUserPendingDataAction(userPendingData.id);
     } catch (error) {
       // TODO: handle error
       console.error(error);
