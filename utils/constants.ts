@@ -29,7 +29,9 @@ function getConstants() {
   }
 
   if (missingEnvs.length > 0) {
-    console.warn(`
+    const isDevelopmentEnv = process.env.NODE_ENV === 'development';
+    isDevelopmentEnv &&
+      console.warn(`
       Missing environment variables:
         ${missingEnvs.join(', ')}
     `);
