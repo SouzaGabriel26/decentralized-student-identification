@@ -34,7 +34,7 @@ export async function Header({ ...props }: BoxProps) {
       }}
       {...props}
     >
-      <Link href="/">
+      <Link href="/" style={{ textDecoration: 'none' }}>
         <Logo />
       </Link>
       <Box
