@@ -28,6 +28,9 @@ export function RegisterForm() {
         gap: 2,
         maxWidth: 400,
         width: '100%',
+        overflowY: 'auto',
+        paddingTop: 16,
+        paddingBottom: 16,
       }}
     >
       <Box
