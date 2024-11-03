@@ -39,7 +39,7 @@ async function createPullRequestComment(comment: string) {
 
   try {
     const res = await fetch(
-      `https://api.github.com/repos/souzagabriel26/student-identification/issues/${pullRequestNumber}/comments`,
+      `https://api.github.com/repos/souzagabriel26/decentralized-student-identification/issues/${pullRequestNumber}/comments`,
       {
         method: 'POST',
         headers: {
