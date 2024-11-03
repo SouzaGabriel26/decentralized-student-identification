@@ -60,7 +60,7 @@ jobs:
         run: pnpm migrate
 
       - name: Run web server & Run test script
-        run: pnpm next & pnpm test
+        run: pnpm dev:all & pnpm test
 
       - name: Stop container
         run: pnpm services:down
