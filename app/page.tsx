@@ -12,16 +12,13 @@ export default async function Home() {
           display: 'block',
           fontSize: 20,
           color: 'slategray',
+          mb: 4,
         }}
       >
         Seja bem vindo ao site da Instituição X
       </Text>
 
-      {!signedUser && (
-        <Link style={{ color: '#539bf5' }} href="/register">
-          Preencher matrícula
-        </Link>
-      )}
+      {!signedUser && <NotSignedLayout />}
 
       {signedUser && signedUser.role === 'USER' && (
         <Link style={{ color: '#539bf5' }} href="/student-card">
@@ -34,6 +31,26 @@ export default async function Home() {
           Verificar carteiras pendentes
         </Link>
       )}
+    </Box>
+  );
+}
+
+function NotSignedLayout() {
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+      <Text>
+        É novo por aqui?{' '}
+        <Link style={{ color: '#539bf5' }} href="/register">
+          Preencher matrícula
+        </Link>
+      </Text>
+
+      <Text>
+        Já possui cadastro?{' '}
+        <Link style={{ color: '#539bf5', width: 'fit-content' }} href="/login">
+          Fazer login
+        </Link>
+      </Text>
     </Box>
   );
 }
