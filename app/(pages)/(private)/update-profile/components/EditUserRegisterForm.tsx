@@ -72,9 +72,9 @@ export function EditUserRegisterForm({
                 display: 'block',
               }}
             >
-              Sobre o aluno: {userPendingData?.name ?? user.name}
+              Aluno(a): {userPendingData?.name ?? user.name}
               <br />
-              email: {userPendingData?.email ?? user.email}
+              Email: {userPendingData?.email ?? user.email}
             </Text>
 
             <Label

@@ -24,7 +24,9 @@ export default async function Page() {
         }}
       >
         <Text>Carteira de estudante não disponível.</Text>
-        <Link href="/student-card/status">Ver status</Link>
+        <Link style={{ color: '#539bf5' }} href="/student-card/status">
+          Ver status
+        </Link>
       </Box>
     );
   }
