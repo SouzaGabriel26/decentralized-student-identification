@@ -1,20 +1,10 @@
 import { ThemeSwitcher } from '@/app/components/ThemeSwitcher';
-import { constants } from '@/utils/constants';
 import { identity } from '@/utils/idendity';
 import { Box, BoxProps } from '@primer/react';
-import { cookies } from 'next/headers';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
+import { signOutAction } from '../(pages)/(private)/action';
 import { Logo } from '../components/Logo';
 import { UserMenu } from '../components/UserMenu';
-
-async function signOutAction() {
-  'use server';
-
-  cookies().delete(constants.access_token_key);
-
-  return redirect('/login');
-}
 
 export async function Header({ ...props }: BoxProps) {
   const signedUser = await identity.getMe();

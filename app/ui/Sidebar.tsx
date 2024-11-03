@@ -1,6 +1,8 @@
 import { identity } from '@/utils/idendity';
 import { navItems } from '@/utils/navItems';
-import { Box, NavList } from '@primer/react';
+import { SignOutIcon } from '@primer/octicons-react';
+import { Box, Button, NavList, Text } from '@primer/react';
+import { signOutAction } from '../(pages)/(private)/action';
 import { NavListItem } from '../components/NavListItem';
 
 export async function Sidebar() {
@@ -14,11 +16,15 @@ export async function Sidebar() {
       as="aside"
       sx={{
         flex: 1,
-        pt: 3,
+        py: 3,
+        px: 2,
         maxWidth: 'fit-content',
         borderRight: '1px solid',
         borderColor: 'border.default',
         bg: 'canvas.subtle',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
       }}
     >
       <NavList
@@ -41,6 +47,34 @@ export async function Sidebar() {
           return <NavListItem key={item.href} item={item} />;
         })}
       </NavList>
+
+      {userSignedIn && (
+        <form action={signOutAction}>
+          <Button
+            type="submit"
+            title="Sair"
+            sx={{
+              marginX: 'auto',
+              width: '100%',
+              '@media (max-width: 480px)': {
+                width: '32px',
+              },
+            }}
+          >
+            <Text
+              sx={{
+                mr: 2,
+                '@media (max-width: 480px)': {
+                  display: 'none',
+                },
+              }}
+            >
+              Sair
+            </Text>
+            <SignOutIcon />
+          </Button>
+        </form>
+      )}
     </Box>
   );
 }
