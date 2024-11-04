@@ -62,7 +62,7 @@ async function createPullRequestComment(comment: string) {
 async function getPullRequestNumber() {
   try {
     const response = await fetch(
-      'https://api.github.com/repos/souzagabriel26/student-identification/pulls?state=all&direction=desc',
+      'https://api.github.com/repos/souzagabriel26/decentralized-student-identification/pulls?state=all&direction=desc',
       {
         method: 'GET',
         headers: {
