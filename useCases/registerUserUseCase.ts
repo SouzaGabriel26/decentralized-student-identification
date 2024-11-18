@@ -57,7 +57,6 @@ export async function registerUserUseCase(
     };
   }
 
-  // TODO: handle cryptography passphrase differently from website password
   const { privateKey, publicKey } = cryptographyService.generateKeyPairs({
     passphrase: input.password,
   });
@@ -77,7 +76,6 @@ export async function registerUserUseCase(
 
   const { file_url } = await lambdaService.uploadFile(input.photo);
 
-  // TODO: delete this information after admin approval
   await userRepository.createPendingData(createdUserId, {
     address: input.address,
     cep: input.cep,
@@ -90,7 +88,6 @@ export async function registerUserUseCase(
     photoUrl: file_url,
   });
 
-  // show privateKey just once
   return {
     errors: null,
     data: {
@@ -177,20 +174,8 @@ const schema = z.object({
       invalid_type_error: 'O campo complemento deve ser uma string',
     })
     .optional(),
-  course: z
-    .string({
-      invalid_type_error: 'O campo curso deve ser uma string',
-      required_error: 'O campo curso é obrigatório',
-    })
-    .refine(
-      (value) =>
-        [
-          'ciencia-da-computacao',
-          'engenharia-de-software',
-          'sistemas-de-informacao',
-        ].includes(value),
-      {
-        message: 'O campo curso deve ser uma das opções disponíveis',
-      },
-    ),
+  course: z.string({
+    invalid_type_error: 'O campo curso deve ser uma string',
+    required_error: 'O campo curso é obrigatório',
+  }),
 });

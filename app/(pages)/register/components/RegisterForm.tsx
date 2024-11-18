@@ -4,6 +4,7 @@ import { tryToRegisterUserAction } from '@/app/(pages)/register/action';
 import { CustomInput } from '@/app/components/CustomInput';
 import { CustomSelect } from '@/app/components/CustomSelect';
 import { LoadingButton } from '@/app/components/LoadingButton';
+import { courses } from '@/utils/courses';
 import { Box, Text } from '@primer/react';
 import { useFormState } from 'react-dom';
 import { Instructions } from '../../../components/Instructions';
@@ -146,26 +147,7 @@ export function RegisterForm() {
           >
             Curso desejado
           </Text>
-          <CustomSelect
-            id="course"
-            name="course"
-            required
-            options={[
-              { value: '', label: '' },
-              {
-                value: 'ciencia-da-computacao',
-                label: 'Ciência da Computação',
-              },
-              {
-                value: 'engenharia-de-software',
-                label: 'Engenharia de Software',
-              },
-              {
-                value: 'sistemas-de-informacao',
-                label: 'Sistemas de Informação',
-              },
-            ]}
-          />
+          <CustomSelect id="course" name="course" required options={courses} />
         </Box>
 
         <Box
