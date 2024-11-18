@@ -4,7 +4,7 @@ import { CopyToClipBoard } from '@/app/components/CopyToClipboard';
 import { LoadingButton } from '@/app/components/LoadingButton';
 import { useWeb3Context } from '@/app/contexts/Web3Context';
 import { ClockFillIcon, XCircleFillIcon } from '@primer/octicons-react';
-import { Box, Button, Dialog, Label, Text } from '@primer/react';
+import { Box, Button, CounterLabel, Dialog, Label, Text } from '@primer/react';
 import { Banner } from '@primer/react/drafts';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -63,18 +63,22 @@ export default function Page() {
   }
 
   return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(500px, 1fr))',
-        gap: 4,
-        placeItems: 'center',
-      }}
-    >
-      {issuedCards.map((card) => (
-        <Card card={card} key={card.cardIssued.studentPublicKey} />
-      ))}
-    </Box>
+    <>
+      <CounterLabel>Total: {issuedCards.length}</CounterLabel>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(500px, 1fr))',
+          gap: 4,
+          mt: 4,
+          placeItems: 'center',
+        }}
+      >
+        {issuedCards.map((card) => (
+          <Card card={card} key={card.cardIssued.studentPublicKey} />
+        ))}
+      </Box>
+    </>
   );
 }
 

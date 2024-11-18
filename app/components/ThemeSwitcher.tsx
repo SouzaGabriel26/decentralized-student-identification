@@ -19,10 +19,10 @@ export function ThemeSwitcher() {
       >
         <ActionList>
           <ActionList.Item onClick={() => setColorMode('light')}>
-            Light
+            Claro
           </ActionList.Item>
           <ActionList.Item onClick={() => setColorMode('dark')}>
-            Dark
+            Escuro
           </ActionList.Item>
         </ActionList>
       </ActionMenu.Overlay>
